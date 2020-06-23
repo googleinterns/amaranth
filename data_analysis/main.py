@@ -6,16 +6,19 @@ Note: this file is best run as an interactive Jupyter notebook
 # %% import libraries
 import pandas as pd
 
+# %% define data directory
+fdc_data_dir = '../data/fdc/'
+
 # %% read food data
-food = pd.read_csv('../data/fdc/food.csv').set_index('fdc_id')
+food = pd.read_csv(fdc_data_dir + 'food.csv').set_index('fdc_id')
 food.head()
 
 # %% read nutrient data
-nutrient = pd.read_csv('../data/fdc/nutrient.csv')
+nutrient = pd.read_csv(fdc_data_dir + 'nutrient.csv')
 nutrient.head()
 
 # %% read food_nutrient data
-food_nutrient = pd.read_csv('../data/fdc/food_nutrient.csv')
+food_nutrient = pd.read_csv(fdc_data_dir + 'food_nutrient.csv')
 food_nutrient.head()
 
 # %% combine food & nutrient data
