@@ -1,4 +1,7 @@
-# This file is best run as an interactive Jupyter notebook
+"""This script is used to explore the FDC dataset and extract basic Calorie statistics
+
+Note: this file is best run as an interactive Jupyter notebook
+"""
 
 # %% import libraries
 import pandas as pd
