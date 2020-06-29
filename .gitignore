@@ -1,5 +1,6 @@
 data/*
 !data/where-is-the-data.md
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

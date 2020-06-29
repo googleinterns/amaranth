@@ -113,17 +113,28 @@ model._layers = [layer for layer in model._layers if not isinstance(layer, dict)
 keras.utils.plot_model(model, show_layer_names=False, show_shapes=True)
 
 # %% split dataset
-train_size = int(0.75 * len(calorie_data))
+train_frac = 0.6
+validation_frac = 0.2
+test_frac = 0.2
 
-calorie_data = calorie_data.sample(frac=1) # shuffle data
-train_set = calorie_data[:train_size-1]
-test_set = calorie_data[train_size:]
+train_set, validation_set, test_set = np.split(
+  calorie_data.sample(frac=1), # shuffle data
+  [
+    int(train_frac * len(calorie_data)),
+    int((train_frac + validation_frac) * len(calorie_data)),
+  ]
+)
 
 # %% train model
 history = model.fit(
   # keras.utils.to_categorical(train_set['description'], num_classes=vocab_size),
   np.stack(train_set['input']),
   np.stack(train_set['calorie_label']),
+  validation_data=(
+    np.stack(validation_set['input']),
+    np.stack(validation_set['calorie_label'])
+  ),
+  callbacks=[keras.callbacks.TensorBoard()],
 )
 
 # %% evaluate model
