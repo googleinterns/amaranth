@@ -36,11 +36,11 @@ def add_calorie_labels(calorie_data, low_calorie_threshold,
 
   def label_row(calorie_data_row):
     if calorie_data_row['amount'] < low_calorie_threshold:
-      return -1 # low calorie
+      return [1, 0, 0] # low calorie
     elif calorie_data_row['amount'] > high_calorie_threshold:
-      return 1 # high calorie
+      return [0, 0, 1] # high calorie
     else:
-      return 0 # avg calorie
+      return [0, 1, 0] # avg calorie
 
   calorie_data['calorie_label'] = calorie_data.apply(
       lambda row: label_row(row), axis=1)
@@ -98,10 +98,14 @@ calorie_data = add_input_labels(calorie_data, vocab_size, max_corpus_length)
 model = keras.Sequential([
   keras.layers.Embedding(vocab_size, int(vocab_size**(1/4)), input_length=max_corpus_length),
   keras.layers.Flatten(),
-  keras.layers.Dense(1, activation='tanh'),
+  keras.layers.Dense(3, activation='softmax'),
 ])
 
-model.compile(optimizer='adam', loss='mse')
+model.compile(
+  optimizer='adam',
+  loss='categorical_crossentropy',
+  metrics=['categorical_accuracy']
+)
 
 # %% model stats
 model.summary()
@@ -115,18 +119,18 @@ calorie_data = calorie_data.sample(frac=1) # shuffle data
 train_set = calorie_data[:train_size-1]
 test_set = calorie_data[train_size:]
 
-# %% compile and train model
+# %% train model
 history = model.fit(
   # keras.utils.to_categorical(train_set['description'], num_classes=vocab_size),
   np.stack(train_set['input']),
-  train_set['calorie_label'],
+  np.stack(train_set['calorie_label']),
 )
 
 # %% evaluate model
 results = model.evaluate(
   # keras.utils.to_categorical(test_set['description'], num_classes=vocab_size),
   np.stack(test_set['input']),
-  test_set['calorie_label'],
+  np.stack(test_set['calorie_label']),
 )
 
 print(results)
