@@ -104,7 +104,7 @@ model = keras.Sequential([
 model.compile(
   optimizer='adam',
   loss='categorical_crossentropy',
-  metrics=['categorical_accuracy']
+  metrics=['categorical_accuracy', keras.metrics.Precision(), keras.metrics.Recall()]
 )
 
 # %% model stats
