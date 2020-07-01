@@ -1,4 +1,7 @@
-"""TODO(tlauerman): DO NOT SUBMIT without one-line documentation for main."""
+"""This script is used to import data and build/train a nutrient-prediction ML model.
+
+Note: this file is best run as an interactive Jupyter notebook
+"""
 
 # %% define imports and functions
 import tensorflow as tf
@@ -32,7 +35,7 @@ def load_calorie_data():
 
 def add_calorie_labels(calorie_data, low_calorie_threshold,
                        high_calorie_threshold):
-  """set 'calorie_label' for each row in the dataset to reflect which class of calorie that dish falls under"""
+  """Set 'calorie_label' for each row in the dataset to reflect which class of calorie that dish falls under"""
 
   def label_row(calorie_data_row):
     if calorie_data_row['amount'] < low_calorie_threshold:
