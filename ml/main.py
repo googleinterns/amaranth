@@ -1,16 +1,26 @@
 # Lint as: python3
 """This script is used to import data and build/train a nutrient-prediction ML model."""
 
-# %% define imports and functions
+# %% define imports and constants
 import amaranth_lib as amaranth
 import numpy as np
 import pandas as pd
+import sklearn.model_selection
 import tensorflow as tf
 from tensorflow import keras
 
+# Location of source data set
 FDC_DATA_DIR = '../data/fdc/'
+
+# Thresholds for what defines "high" and "low" calorie
 LOW_CALORIE_THRESHOLD = 100
 HIGH_CALORIE_THRESHOLD = 500
+
+# Fraction of data that should be used for training, validation, and testing.
+# Should all sum to 1.0.
+TRAIN_FRAC = 0.6
+VALIDATION_FRAC = 0.2
+TEST_FRAC = 0.2
 
 
 def main():
@@ -57,23 +67,16 @@ def main():
   keras.utils.plot_model(model, show_layer_names=False, show_shapes=True)
 
   # %% split dataset
-  train_frac = 0.6
-  validation_frac = 0.2
-  test_frac = 0.2
-
-  train_set, validation_set, test_set = np.split(
-      calorie_data.sample(frac=1),  # shuffle data
-      [
-          int(train_frac * len(calorie_data)),
-          int((train_frac + validation_frac) * len(calorie_data)),
-      ])
+  train_set, test_set = sklearn.model_selection.train_test_split(
+      calorie_data,
+      train_size=TRAIN_FRAC + VALIDATION_FRAC,
+      test_size=TEST_FRAC)
 
   # %% train model
   history = model.fit(
       np.stack(train_set['input']),
       np.stack(train_set['calorie_label']),
-      validation_data=(np.stack(validation_set['input']),
-                       np.stack(validation_set['calorie_label'])),
+      validation_split=VALIDATION_FRAC / (TRAIN_FRAC + VALIDATION_FRAC),
       callbacks=[keras.callbacks.TensorBoard()],
   )
 
