@@ -4,7 +4,6 @@
 # %% define imports and constants
 import amaranth_lib as amaranth
 import numpy as np
-import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
 from tensorflow import keras
@@ -73,7 +72,7 @@ def main():
       test_size=TEST_FRAC)
 
   # %% train model
-  history = model.fit(
+  model.fit(
       np.stack(train_set['input']),
       np.stack(train_set['calorie_label']),
       validation_split=VALIDATION_FRAC / (TRAIN_FRAC + VALIDATION_FRAC),
