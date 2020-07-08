@@ -32,10 +32,6 @@ def read_calorie_data(fdc_data_dir: str):
   # extract energy/kcal data
   calorie_data = combined[(combined['name'] == 'Energy')
                           & (combined['unit_name'] == 'KCAL')]
-  calorie_data = calorie_data[[
-      'description', 'data_type', 'name', 'amount', 'unit_name'
-  ]]  # keep relevant cols
-  calorie_data = calorie_data.dropna().drop_duplicates()  # clean data
 
   return calorie_data
 

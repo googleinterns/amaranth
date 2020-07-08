@@ -25,7 +25,11 @@ TEST_FRAC = 0.2
 def main():
   # %% read data from disk
   print(f'Tensorflow version {tf.__version__}')
-  calorie_data = amaranth.load_calorie_data(FDC_DATA_DIR)
+  calorie_data = amaranth.read_calorie_data(FDC_DATA_DIR)
+  calorie_data = calorie_data[[
+      'description', 'data_type', 'name', 'amount', 'unit_name'
+  ]]  # keep only relevant cols
+  calorie_data = amaranth.clean_data(calorie_data)
   amaranth.add_calorie_labels(
       calorie_data,
       low_calorie_threshold=LOW_CALORIE_THRESHOLD,
