@@ -10,28 +10,52 @@ import pandas as pd
 from tensorflow import keras
 
 
-def read_calorie_data(fdc_data_dir: str):
-  """Takes a path to the FDC dataset, returns the calorie data from it.
+def combine_dataframes(index: str, *dataframes: pd.DataFrame):
+  """Takes a DataFrame index, and a number of DataFrames to join based on that index.
 
   Args:
-    fdc_data_dir (str): A path to the FDC dataset
+    index (str): The title of the column to combine the DataFrames on
+    *dataframes (pd.DataFrame): Dataframes to combine
 
   Returns:
-    calorie_data (pd.DataFrame): All Calorie-related data from the FDC dataset
-    measured in kcals
+    combined_dataframe (pd.DataFrame): The final combined dataframe with it's
+    index set to 'index'
   """
 
-  food = pd.read_csv(fdc_data_dir + 'food.csv').set_index('fdc_id')
-  nutrient = pd.read_csv(fdc_data_dir + 'nutrient.csv')
-  food_nutrient = pd.read_csv(fdc_data_dir + 'food_nutrient.csv')
+  if not dataframes:
+    return pd.DataFrame()
 
-  # combine food & nutrient data
-  combined = food.join(food_nutrient.set_index('fdc_id'))
-  combined = combined.join(nutrient.set_index('id'), on='nutrient_id')
+  combined_dataframe = dataframes[0].set_index(index)
+  for df in dataframes[1:]:
+    combined_dataframe = combined_dataframe.join(df.set_index(index))
 
-  # extract energy/kcal data
-  calorie_data = combined[(combined['name'] == 'Energy')
-                          & (combined['unit_name'] == 'KCAL')]
+  return combined_dataframe
+
+
+def get_calorie_data(dataframe: pd.DataFrame, units: str):
+  """Returns a copy of a DataFrame with only calorie data in the specified units.
+
+  Returns a copy of dataframe where the 'name' column must be equal to 'Energy'
+  and the 'unit_name' column must be equal to 'units' (ignoring case). As such,
+  both of these columns must be present, otherwise you will get a KeyError.
+
+  Args:
+    dataframe (pd.DataFrame): The DataFrame to extract calorie data from
+    units (str): The desired units of the calorie data
+
+  Returns:
+    calorie_data (pd.DataFrame): All calorie-related data present in
+    'dataframe' with 'units' units.
+
+  Raises:
+    KeyError: If either 'name' or 'unit_name' columns are absent in 'dataframe'
+  """
+
+  if 'name' not in dataframe or 'unit_name' not in dataframe:
+    raise KeyError
+
+  calorie_data = dataframe[(dataframe['name'] == 'Energy')
+                           & (dataframe['unit_name'].lower() == units.lower())]
 
   return calorie_data
 
