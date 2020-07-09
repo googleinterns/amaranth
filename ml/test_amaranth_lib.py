@@ -2,12 +2,46 @@
 """These tests ensure correctness for the helper functions in amaranth_lib."""
 
 import unittest
+import ml.amaranth_lib as amaranth
+import pandas as pd
 
 
 class TestAmaranthHelpers(unittest.TestCase):
 
   def test_combine_dataframes(self):
-    raise NotImplementedError
+    self.assertTrue(amaranth.combine_dataframes('').equals(pd.DataFrame()))
+    self.assertTrue(
+        amaranth.combine_dataframes(
+            'id', pd.DataFrame(data={
+                'id': [1, 2, 3],
+                'val': [4, 5, 6]
+            })).equals(
+                pd.DataFrame(data={
+                    'id': [1, 2, 3],
+                    'val': [4, 5, 6],
+                }).set_index('id')))
+    self.assertTrue(
+        amaranth.combine_dataframes(
+            'id', pd.DataFrame(data={
+                'id': [1, 2, 3],
+                'val': [4, 5, 6],
+            }),
+            pd.DataFrame(data={
+                'id': [1, 2, 3],
+                'str': ['four', 'five', 'six'],
+            })).equals(
+                pd.DataFrame(
+                    data={
+                        'id': [1, 2, 3],
+                        'val': [4, 5, 6],
+                        'str': ['four', 'five', 'six'],
+                    }).set_index('id')))
+    with self.assertRaises(KeyError):
+      amaranth.combine_dataframes(
+          'wrong_id', pd.DataFrame(data={
+              'id': [1, 2, 3],
+              'val': [4, 5, 6],
+          }))
 
   def test_get_calorie_data(self):
     raise NotImplementedError

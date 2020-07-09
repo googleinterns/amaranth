@@ -20,6 +20,8 @@ def combine_dataframes(index: str, *dataframes: pd.DataFrame):
   Returns:
     combined_dataframe (pd.DataFrame): The final combined dataframe with it's
     index set to 'index'
+  Raises:
+    KeyError: If any dataframes don't have the 'index' column
   """
 
   if not dataframes:
