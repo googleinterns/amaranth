@@ -6,7 +6,10 @@ import unittest
 
 class TestAmaranthHelpers(unittest.TestCase):
 
-  def test_load_calorie_data(self):
+  def test_combine_dataframes(self):
+    raise NotImplementedError
+
+  def test_get_calorie_data(self):
     raise NotImplementedError
 
   def test_clean_data(self):
