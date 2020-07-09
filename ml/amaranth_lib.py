@@ -53,9 +53,11 @@ def get_calorie_data(dataframe: pd.DataFrame, units: str):
     KeyError: If either 'name' or 'unit_name' columns are absent in 'dataframe'
   """
 
-  calorie_data = dataframe[
-      (dataframe['name'] == 'Energy')
-      & (dataframe['unit_name'].str.lower() == units.lower())]
+  # Only keep rows where value of 'name' == 'Energy'
+  calorie_data = dataframe[(dataframe['name'] == 'Energy')]
+  # Only keep rows where value of 'unit_name' == units
+  calorie_data = calorie_data[(
+      calorie_data['unit_name'].str.lower() == units.lower())]
 
   return calorie_data
 
