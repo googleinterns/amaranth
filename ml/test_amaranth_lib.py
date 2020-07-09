@@ -52,7 +52,24 @@ class TestAmaranthHelpers(unittest.TestCase):
           }))
 
   def test_get_calorie_data(self):
-    raise NotImplementedError
+    with self.assertRaises(
+        KeyError,
+        msg='Getting calorie data of a DataFrame without \'name\' or \'unit_name\' columns results in a KeyError'
+    ):
+      amaranth.get_calorie_data(pd.DataFrame(), '')
+    self.assertTrue(
+        amaranth.get_calorie_data(
+            pd.DataFrame(
+                data={
+                    'name': ['Energy', 'Energy', 'Fat'],
+                    'unit_name': ['kcal', 'kj', 'kcal'],
+                }), 'kcal').equals(
+                    pd.DataFrame(data={
+                        'name': ['Energy'],
+                        'unit_name': ['kcal'],
+                    })),
+        'Getting calorie data of a DataFrame should only return columns where \'name\' = \'Energy\' and \'unit_name\' = \'unit\''
+    )
 
   def test_clean_data(self):
     raise NotImplementedError

@@ -53,11 +53,9 @@ def get_calorie_data(dataframe: pd.DataFrame, units: str):
     KeyError: If either 'name' or 'unit_name' columns are absent in 'dataframe'
   """
 
-  if 'name' not in dataframe or 'unit_name' not in dataframe:
-    raise KeyError
-
-  calorie_data = dataframe[(dataframe['name'] == 'Energy')
-                           & (dataframe['unit_name'].lower() == units.lower())]
+  calorie_data = dataframe[
+      (dataframe['name'] == 'Energy')
+      & (dataframe['unit_name'].str.lower() == units.lower())]
 
   return calorie_data
 
