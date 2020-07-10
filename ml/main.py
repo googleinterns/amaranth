@@ -1,7 +1,7 @@
 # Lint as: python3
 """This script is used to import data and build/train a nutrient-prediction ML model."""
 
-# %% define imports and constants
+# Define imports and constants
 import os
 import ml.amaranth_lib as amaranth
 import numpy as np
@@ -24,21 +24,21 @@ TEST_FRAC = 0.2
 
 
 def main():
-  # %% read data from disk
+  # Read data from disk
   print(f'Tensorflow version {tf.__version__}')
   current_dir = os.path.dirname(__file__)
   abs_fdc_data_dir = os.path.join(current_dir, FDC_DATA_DIR)
   calorie_data = amaranth.read_calorie_data(abs_fdc_data_dir)
   calorie_data = calorie_data[[
       'description', 'data_type', 'name', 'amount', 'unit_name'
-  ]]  # keep only relevant cols
+  ]]  # Keep only relevant cols
   calorie_data = amaranth.clean_data(calorie_data)
   amaranth.add_calorie_labels(
       calorie_data,
       low_calorie_threshold=LOW_CALORIE_THRESHOLD,
       high_calorie_threshold=HIGH_CALORIE_THRESHOLD)
 
-  # %% add encode 'description' into a new 'input' column in calorie_data
+  # Add encode 'description' into a new 'input' column in calorie_data
   calorie_data['description'] = calorie_data['description'].str.replace(
       ',', '').str.lower()
   corpus = calorie_data['description']
@@ -48,7 +48,7 @@ def main():
   calorie_data = amaranth.add_input_labels(calorie_data, vocab_size,
                                            max_corpus_length)
 
-  # %% create model
+  # Create model
   model = keras.Sequential([
       keras.layers.Embedding(
           vocab_size, int(vocab_size**(1 / 4)), input_length=max_corpus_length),
@@ -65,20 +65,20 @@ def main():
           keras.metrics.Recall()
       ])
 
-  # %% model stats
+  # Model stats
   model.summary()
-  model._layers = [  # workaround for bug in keras.util.plot_model pylint: disable=protected-access
+  model._layers = [  # Workaround for bug in keras.util.plot_model pylint: disable=protected-access
       layer for layer in model._layers if not isinstance(layer, dict)  # pylint: disable=protected-access
   ]
   keras.utils.plot_model(model, show_layer_names=False, show_shapes=True)
 
-  # %% split dataset
+  # Split dataset
   train_set, test_set = sklearn.model_selection.train_test_split(
       calorie_data,
       train_size=TRAIN_FRAC + VALIDATION_FRAC,
       test_size=TEST_FRAC)
 
-  # %% train model
+  # Train model
   model.fit(
       np.stack(train_set['input']),
       np.stack(train_set['calorie_label']),
@@ -86,15 +86,13 @@ def main():
       callbacks=[keras.callbacks.TensorBoard()],
   )
 
-  # %% evaluate model
+  # Evaluate model
   results = model.evaluate(
       np.stack(test_set['input']),
       np.stack(test_set['calorie_label']),
   )
 
   print(results)
-
-  # %%
 
 
 if __name__ == '__main__':
