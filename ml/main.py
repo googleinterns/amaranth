@@ -3,11 +3,13 @@
 
 # Define imports and constants
 import os
-import ml.amaranth_lib as amaranth
+import amaranth_lib as amaranth
 import numpy as np
+import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.preprocessing import text
 
 # Location of source data set
 FDC_DATA_DIR = '../data/fdc/'
@@ -24,11 +26,23 @@ TEST_FRAC = 0.2
 
 
 def main():
-  # Read data from disk
   print(f'Tensorflow version {tf.__version__}')
+
+  # Get data directory path
   current_dir = os.path.dirname(__file__)
   abs_fdc_data_dir = os.path.join(current_dir, FDC_DATA_DIR)
-  calorie_data = amaranth.read_calorie_data(abs_fdc_data_dir)
+
+  # Read data from disk
+  food = pd.read_csv(os.path.join(abs_fdc_data_dir, 'food.csv'))
+  nutrient = pd.read_csv(os.path.join(
+      abs_fdc_data_dir, 'nutrient.csv')).rename(columns={'id': 'nutrient_id'})
+  food_nutrient = pd.read_csv(
+      os.path.join(abs_fdc_data_dir, 'food_nutrient.csv'))
+  combined = amaranth.combine_dataframes('fdc_id', food, food_nutrient)
+  combined = amaranth.combine_dataframes('nutrient_id', combined, nutrient)
+
+  # Extract and format calorie data
+  calorie_data = amaranth.get_calorie_data(combined, 'kcal')
   calorie_data = calorie_data[[
       'description', 'data_type', 'name', 'amount', 'unit_name'
   ]]  # Keep only relevant cols
@@ -38,15 +52,21 @@ def main():
       low_calorie_threshold=LOW_CALORIE_THRESHOLD,
       high_calorie_threshold=HIGH_CALORIE_THRESHOLD)
 
-  # Add encode 'description' into a new 'input' column in calorie_data
+  # Do some preprocessing and calculations for encoding
   calorie_data['description'] = calorie_data['description'].str.replace(
       ',', '').str.lower()
   corpus = calorie_data['description']
   vocab_size = amaranth.num_unique_words(corpus)
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
   max_corpus_length = amaranth.max_sequence_length(tokenized_corpus)
-  calorie_data = amaranth.add_input_labels(calorie_data, vocab_size,
-                                           max_corpus_length)
+
+  # Encode 'description' into new column 'input'
+  calorie_data['input'] = calorie_data.apply(
+      lambda row: text.one_hot(row['description'], vocab_size), axis=1)
+
+  # Pad 'input' column to all be the same length for embedding input
+  calorie_data['input'] = calorie_data.apply(
+      lambda row: amaranth.pad_list(row['input'], max_corpus_length, 0), axis=1)
 
   # Create model
   model = keras.Sequential([
