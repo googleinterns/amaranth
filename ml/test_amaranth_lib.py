@@ -3,6 +3,7 @@
 
 import unittest
 import ml.amaranth_lib as amaranth
+import numpy as np
 import pandas as pd
 
 
@@ -72,7 +73,44 @@ class TestAmaranthHelpers(unittest.TestCase):
          'where \'name\' = \'Energy\' and \'unit_name\' = \'unit\''))
 
   def test_clean_data(self):
-    raise NotImplementedError
+    self.assertTrue(
+        amaranth.clean_data(
+            pd.DataFrame(data={
+                'id': [1, 2, 3],
+                'val': ['one', 'two', 'three'],
+            })).equals(
+                pd.DataFrame(data={
+                    'id': [1, 2, 3],
+                    'val': ['one', 'two', 'three'],
+                })),
+        'Cleaning DataFrame without duplicates returns the same DataFrame')
+    self.assertTrue(
+        amaranth.clean_data(
+            pd.DataFrame(data={
+                'id': [1, 2],
+                'val': ['one', np.nan]
+            })).equals(pd.DataFrame(data={
+                'id': [1],
+                'val': ['one'],
+            })), 'Cleaning DataFrame with NaN removes NaN')
+    self.assertTrue(
+        amaranth.clean_data(
+            pd.DataFrame(data={
+                'id': [1, 1],
+                'val': ['one', 'one'],
+            })).equals(pd.DataFrame(data={
+                'id': [1],
+                'val': ['one'],
+            })), 'Cleaning DataFrame removes duplicates')
+    self.assertTrue(
+        amaranth.clean_data(
+            pd.DataFrame(data={
+                'id': [1, 2, 1],
+                'val': ['one', np.nan, 'one'],
+            })).equals(pd.DataFrame(data={
+                'id': [1],
+                'val': ['one'],
+            })), 'Cleaning DataFrame removes NaN and duplicates')
 
   def test_add_calorie_labels(self):
     raise NotImplementedError
