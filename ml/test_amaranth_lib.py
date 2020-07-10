@@ -190,7 +190,19 @@ class TestAmaranthHelpers(unittest.TestCase):
         'Max sequence length of multiple lists is correct')
 
   def test_pad_list(self):
-    raise NotImplementedError
+    self.assertEqual(
+        amaranth.pad_list([], 0, 0), [],
+        'Empty list with no padding remains an empty list')
+    self.assertEqual(
+        amaranth.pad_list([], 5, 0), [0, 0, 0, 0, 0],
+        'Empty list with a padding of 5 zeroes becomes a list of 5 zeroes')
+    self.assertEqual(
+        amaranth.pad_list([1, 2, 3], 5, 0), [1, 2, 3, 0, 0],
+        ('Existing list padded with zeroes to length 5 contains original '
+         'values followed by zeroes'))
+    self.assertEqual(
+        amaranth.pad_list([1, 2, 3], 1, 0), [1, 2, 3],
+        'Existing list padded to smaller length should return original list')
 
 
 if __name__ == '__main__':
