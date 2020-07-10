@@ -113,7 +113,57 @@ class TestAmaranthHelpers(unittest.TestCase):
             })), 'Cleaning DataFrame removes NaN and duplicates')
 
   def test_add_calorie_labels(self):
-    raise NotImplementedError
+    with self.assertRaises(
+        KeyError,
+        msg='Labelling DataFrame with no \'amount\' column raises a KeyError'):
+      amaranth.add_calorie_labels(pd.DataFrame(data={'id': [1]}), 0, 0)
+    self.assertTrue(
+        amaranth.add_calorie_labels(
+            pd.DataFrame(data={
+                'amount': [0, 1, 2],
+            }), 100, 200).equals(
+                pd.DataFrame(
+                    data={
+                        'amount': [0, 1, 2],
+                        'calorie_label': [[1, 0, 0], [1, 0, 0], [1, 0, 0]],
+                    })),
+        'Calories are correctly labeled for low calorie dishes')
+    self.assertTrue(
+        amaranth.add_calorie_labels(
+            pd.DataFrame(data={
+                'amount': [1, 2, 3],
+            }), 0, 100).equals(
+                pd.DataFrame(
+                    data={
+                        'amount': [1, 2, 3],
+                        'calorie_label': [[0, 1, 0], [0, 1, 0], [0, 1, 0]],
+                    })),
+        'Calories are correctly labeled for average calorie dishes')
+    self.assertTrue(
+        amaranth.add_calorie_labels(
+            pd.DataFrame(data={
+                'amount': [1, 2, 3],
+            }), 0, 0).equals(
+                pd.DataFrame(
+                    data={
+                        'amount': [1, 2, 3],
+                        'calorie_label': [[0, 0, 1], [0, 0, 1], [0, 0, 1]],
+                    })),
+        'Calories are correctly labeled for high calorie dishes')
+    self.assertTrue(
+        amaranth.add_calorie_labels(
+            pd.DataFrame(data={
+                'amount': [0, 100, 200, 300, 400, 500, 600],
+            }), 250, 350).equals(
+                pd.DataFrame(
+                    data={
+                        'amount': [0, 100, 200, 300, 400, 500, 600],
+                        'calorie_label': [[1, 0, 0], [1, 0, 0], [1, 0, 0],
+                                          [0, 1, 0], [0, 0, 1], [0, 0, 1],
+                                          [0, 0, 1]],
+                    })),
+        ('Calories are correctly labeled for low, average, and high calorie '
+         'dishes'))
 
   def test_num_unique_words(self):
     raise NotImplementedError
