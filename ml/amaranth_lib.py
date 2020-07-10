@@ -147,7 +147,7 @@ def max_sequence_length(sequences: Iterable[Sized]):
 
 def add_input_labels(calorie_data: pd.DataFrame, vocab_size: int,
                      max_corpus_length: int):
-  """One-hot-encodes a DataFrame's 'description' column into a new 'input' column.
+  """One-hot-encodes a DataFrame's 'description' column into 'input' column.
 
   Creates a one-hot-encoding of the 'description' column in calorie_data. This
   one-hot-encoding is dense, where each value is the activated index in vector
