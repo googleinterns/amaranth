@@ -123,7 +123,7 @@ def num_unique_words(strings: Iterable[str]):
   words = set()
 
   for entry in strings:
-    words.update(entry.split(' +'))
+    words.update(entry.split())
 
   return len(words)
 
