@@ -11,7 +11,7 @@ from tensorflow import keras
 
 
 def combine_dataframes(index: str, *dataframes: pd.DataFrame):
-  """Takes a DataFrame index, and a number of DataFrames to join based on that index.
+  """Takes a DataFrame index, and DataFrames to join based on that index.
 
   Args:
     index (str): The title of the column to combine the DataFrames on
@@ -35,7 +35,7 @@ def combine_dataframes(index: str, *dataframes: pd.DataFrame):
 
 
 def get_calorie_data(dataframe: pd.DataFrame, units: str):
-  """Returns a copy of a DataFrame with only calorie data in the specified units.
+  """Gets calorie data from a DataFrame in the specified units.
 
   Returns a copy of dataframe where the 'name' column must be equal to 'Energy'
   and the 'unit_name' column must be equal to 'units' (ignoring case). As such,
@@ -63,7 +63,7 @@ def get_calorie_data(dataframe: pd.DataFrame, units: str):
 
 
 def clean_data(dataframe: pd.DataFrame):
-  """Takes a DataFrame, returns a copy of the DataFrame with missing values and duplicate rows removed.
+  """Removes missing values and duplicate rows from a DataFrame.
 
   Args:
     dataframe (pd.DataFrame): The DataFrame to clean
@@ -77,7 +77,7 @@ def clean_data(dataframe: pd.DataFrame):
 
 def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
                        high_calorie_threshold: float):
-  """Adds a 'calorie_label' column to a calorie DataFrame which one-hot-encodes the calorie amount.
+  """Adds a one-hot-encoded 'calorie_label' column to a calorie DataFrame.
 
   Labels a calorie DataFrame by one-hot-encoding the 'amount' column into 1 of 3
   categories: low calorie, high calorie, or average calorie. The category a
@@ -110,7 +110,7 @@ def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
 
 
 def num_unique_words(strings: Iterable[str]):
-  """Takes an iterator of strings, returns the number of unique words in all strings.
+  """Counts the number of unique words in an iterator of strings.
 
   Args:
     strings (Iterator[str]): An iterator  of strings with words separated by 1
@@ -129,7 +129,7 @@ def num_unique_words(strings: Iterable[str]):
 
 
 def max_sequence_length(sequences: Iterable[Sized]):
-  """Takes an Iterator of some sized type, returns the maximum length of all sequences.
+  """Computes the length of the longest sized element in an iterable.
 
   Args:
     sequences (Iterator): An iterator of some sized type
@@ -147,7 +147,7 @@ def max_sequence_length(sequences: Iterable[Sized]):
 
 def add_input_labels(calorie_data: pd.DataFrame, vocab_size: int,
                      max_corpus_length: int):
-  """Adds an 'input' column to a calorie DataFrame which one-hot-encodes the dish title.
+  """One-hot-encodes a DataFrame's 'description' column into a new 'input' column.
 
   Creates a one-hot-encoding of the 'description' column in calorie_data. This
   one-hot-encoding is dense, where each value is the activated index in vector

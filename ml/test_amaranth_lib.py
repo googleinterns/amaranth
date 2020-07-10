@@ -39,12 +39,12 @@ class TestAmaranthHelpers(unittest.TestCase):
                         'val': [4, 5, 6],
                         'str': ['four', 'five', 'six'],
                     }).set_index('id')),
-        'Combining two DataFrames yields one DataFrame with the properties of both'
-    )
+        ('Combining two DataFrames yields one DataFrame with the properties '
+         'of both'))
     with self.assertRaises(
         KeyError,
-        msg='Combining DataFrame(s) with an index that isn\'t present results in a KeyError'
-    ):
+        msg=('Combining DataFrame(s) with an index that isn\'t present '
+             'results in a KeyError')):
       amaranth.combine_dataframes(
           'wrong_id', pd.DataFrame(data={
               'id': [1, 2, 3],
@@ -54,8 +54,8 @@ class TestAmaranthHelpers(unittest.TestCase):
   def test_get_calorie_data(self):
     with self.assertRaises(
         KeyError,
-        msg='Getting calorie data of a DataFrame without \'name\' or \'unit_name\' columns results in a KeyError'
-    ):
+        msg=('Getting calorie data of a DataFrame without \'name\' or '
+             '\'unit_name\' columns results in a KeyError')):
       amaranth.get_calorie_data(pd.DataFrame(), '')
     self.assertTrue(
         amaranth.get_calorie_data(
@@ -68,8 +68,8 @@ class TestAmaranthHelpers(unittest.TestCase):
                         'name': ['Energy'],
                         'unit_name': ['kcal'],
                     })),
-        'Getting calorie data of a DataFrame should only return columns where \'name\' = \'Energy\' and \'unit_name\' = \'unit\''
-    )
+        ('Getting calorie data of a DataFrame should only return columns '
+         'where \'name\' = \'Energy\' and \'unit_name\' = \'unit\''))
 
   def test_clean_data(self):
     raise NotImplementedError
