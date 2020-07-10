@@ -5,39 +5,64 @@ This module is in charge of encapsulating commonly used methods or well-defined
 functions away from ml/main.py for simplicity and readability.
 """
 
-from typing import Iterable, Sized
+from typing import Iterable, Sized, List, Any
 import pandas as pd
-from tensorflow import keras
 
 
-def read_calorie_data(fdc_data_dir: str):
-  """Takes a path to the FDC dataset, returns the calorie data from it.
+def combine_dataframes(index: str, *dataframes: pd.DataFrame):
+  """Takes a DataFrame index, and DataFrames to join based on that index.
 
   Args:
-    fdc_data_dir (str): A path to the FDC dataset
+    index (str): The title of the column to combine the DataFrames on
+    *dataframes (pd.DataFrame): Dataframes to combine
 
   Returns:
-    calorie_data (pd.DataFrame): All Calorie-related data from the FDC dataset
-    measured in kcals
+    combined_dataframe (pd.DataFrame): The final combined dataframe with it's
+    index set to 'index'
+  Raises:
+    KeyError: If any dataframes don't have the 'index' column
   """
 
-  food = pd.read_csv(fdc_data_dir + 'food.csv').set_index('fdc_id')
-  nutrient = pd.read_csv(fdc_data_dir + 'nutrient.csv')
-  food_nutrient = pd.read_csv(fdc_data_dir + 'food_nutrient.csv')
+  if not dataframes:
+    return pd.DataFrame()
 
-  # combine food & nutrient data
-  combined = food.join(food_nutrient.set_index('fdc_id'))
-  combined = combined.join(nutrient.set_index('id'), on='nutrient_id')
+  combined_dataframe = dataframes[0].set_index(index)
+  for df in dataframes[1:]:
+    combined_dataframe = combined_dataframe.join(df.set_index(index))
 
-  # extract energy/kcal data
-  calorie_data = combined[(combined['name'] == 'Energy')
-                          & (combined['unit_name'] == 'KCAL')]
+  return combined_dataframe
+
+
+def get_calorie_data(dataframe: pd.DataFrame, units: str):
+  """Gets calorie data from a DataFrame in the specified units.
+
+  Returns a copy of dataframe where the 'name' column must be equal to 'Energy'
+  and the 'unit_name' column must be equal to 'units' (ignoring case). As such,
+  both of these columns must be present, otherwise you will get a KeyError.
+
+  Args:
+    dataframe (pd.DataFrame): The DataFrame to extract calorie data from
+    units (str): The desired units of the calorie data
+
+  Returns:
+    calorie_data (pd.DataFrame): All calorie-related data present in
+    'dataframe' with 'units' units.
+
+  Raises:
+    KeyError: If either 'name' or 'unit_name' columns are absent in 'dataframe'
+  """
+
+  # Only keep rows where value of 'name' == 'Energy'
+  calorie_data = dataframe[(dataframe['name'] == 'Energy')]
+  # Only keep rows where value of 'unit_name' == units
+  calorie_data = calorie_data[(
+      calorie_data['unit_name'].str.lower() == units.lower())]
 
   return calorie_data
 
 
 def clean_data(dataframe: pd.DataFrame):
-  """Takes a DataFrame, returns a copy of the DataFrame with missing values and duplicate rows removed.
+  """Removes missing values and duplicate rows from a DataFrame.
 
   Args:
     dataframe (pd.DataFrame): The DataFrame to clean
@@ -51,8 +76,8 @@ def clean_data(dataframe: pd.DataFrame):
 
 def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
                        high_calorie_threshold: float):
-  """Adds a 'calorie_label' column to a calorie DataFrame which one-hot-encodes the calorie amount.
-
+  """Adds a one-hot-encoded 'calorie_label' column to a calorie DataFrame.
+  
   Labels a calorie DataFrame by one-hot-encoding the 'amount' column into 1 of 3
   categories: low calorie, high calorie, or average calorie. The category a
   dish falls under is  determined by the low_calorie_threshold and
@@ -84,7 +109,7 @@ def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
 
 
 def num_unique_words(strings: Iterable[str]):
-  """Takes an iterator of strings, returns the number of unique words in all strings.
+  """Counts the number of unique words in an iterator of strings.
 
   Args:
     strings (Iterator[str]): An iterator  of strings with words separated by 1
@@ -97,13 +122,13 @@ def num_unique_words(strings: Iterable[str]):
   words = set()
 
   for entry in strings:
-    words.update(entry.split(' +'))
+    words.update(entry.split())
 
   return len(words)
 
 
 def max_sequence_length(sequences: Iterable[Sized]):
-  """Takes an Iterator of some sized type, returns the maximum length of all sequences.
+  """Computes the length of the longest sized element in an iterable.
 
   Args:
     sequences (Iterator): An iterator of some sized type
@@ -119,37 +144,24 @@ def max_sequence_length(sequences: Iterable[Sized]):
   return max_len
 
 
-def add_input_labels(calorie_data: pd.DataFrame, vocab_size: int,
-                     max_corpus_length: int):
-  """Adds an 'input' column to a calorie DataFrame which one-hot-encodes the dish title.
+def pad_list(lst: List[Any], desired_length: int, padding_value: Any):
+  """Pads a list with a given value up to a certain length.
 
-  Creates a one-hot-encoding of the 'description' column in calorie_data. This
-  one-hot-encoding is dense, where each value is the activated index in vector
-  of size vocab_size. Every one-hot-encoding generated by this function will be
-  of size max_corpus_length and will be added to calorie_data as a new column
-  called 'input'.
+  Continuously appends padding_value to lst until len(lst) is greater than or
+  equal to desired_length. The only time len(lst) would be greater than
+  desired_length is if it was already greater than desired_length when this
+  function is called. In this case, lst is returned as-is.
 
   Args:
-    calorie_data (pd.DataFrame): A pandas DataFrame with calorie data. Must
-      include the 'description' column
-    vocab_size (int): the number of unique words present in all
-      calorie_data['description'] entries
-    max_corpus_length (int): the maximum number of space-separated words that
-      can be present in a calorie_data['description'] entry
+    lst (List[Any]): A list to pad
+    desired_length (int): The length to pad lst to
+    padding_value (Any): The value to append to lst to reach desired_length
 
   Returns:
-    labeled_calorie_data (pd.DataFrame): The same calorie_data argument with a
-    new 'input' column populated with a dense one-hot-encoding of the
-    'description' column
+    padded_lst (List[Any]): A list of at least desired_length
   """
 
-  def input_for_row(row):
-    encoded = keras.preprocessing.text.one_hot(row['description'], vocab_size)
+  while len(lst) < desired_length:
+    lst.append(padding_value)
 
-    while len(encoded) < max_corpus_length:
-      encoded.append(0)
-
-    return encoded
-
-  calorie_data['input'] = calorie_data.apply(input_for_row, axis=1)
-  return calorie_data
+  return lst
