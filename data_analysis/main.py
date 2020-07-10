@@ -4,6 +4,7 @@ Note: this file is best run as an interactive Jupyter notebook
 """
 
 # %% import libraries
+import os
 import pandas as pd
 
 # %% define constants
@@ -12,15 +13,18 @@ LOW_CALORIE_THRESHOLD = 100
 HIGH_CALORIE_THRESHOLD = 500
 
 # %% read food data
-food = pd.read_csv(FDC_DATA_DIR + 'food.csv').set_index('fdc_id')
+current_dir = os.path.dirname(__file__)
+abs_fdc_data_dir = os.path.join(current_dir, FDC_DATA_DIR)
+food = pd.read_csv(os.path.join(abs_fdc_data_dir,
+                                'food.csv')).set_index('fdc_id')
 food.head()
 
 # %% read nutrient data
-nutrient = pd.read_csv(FDC_DATA_DIR + 'nutrient.csv')
+nutrient = pd.read_csv(os.path.join(abs_fdc_data_dir, 'nutrient.csv'))
 nutrient.head()
 
 # %% read food_nutrient data
-food_nutrient = pd.read_csv(FDC_DATA_DIR + 'food_nutrient.csv')
+food_nutrient = pd.read_csv(os.path.join(abs_fdc_data_dir, 'food_nutrient.csv'))
 food_nutrient.head()
 
 # %% combine food & nutrient data

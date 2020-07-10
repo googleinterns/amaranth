@@ -77,7 +77,7 @@ def clean_data(dataframe: pd.DataFrame):
 def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
                        high_calorie_threshold: float):
   """Adds a one-hot-encoded 'calorie_label' column to a calorie DataFrame.
-  
+
   Labels a calorie DataFrame by one-hot-encoding the 'amount' column into 1 of 3
   categories: low calorie, high calorie, or average calorie. The category a
   dish falls under is  determined by the low_calorie_threshold and

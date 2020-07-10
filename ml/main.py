@@ -2,7 +2,8 @@
 """This script is used to import data and build/train a nutrient-prediction ML model."""
 
 # %% define imports and constants
-import amaranth_lib as amaranth
+import os
+import ml.amaranth_lib as amaranth
 import numpy as np
 import sklearn.model_selection
 import tensorflow as tf
@@ -25,7 +26,9 @@ TEST_FRAC = 0.2
 def main():
   # %% read data from disk
   print(f'Tensorflow version {tf.__version__}')
-  calorie_data = amaranth.read_calorie_data(FDC_DATA_DIR)
+  current_dir = os.path.dirname(__file__)
+  abs_fdc_data_dir = os.path.join(current_dir, FDC_DATA_DIR)
+  calorie_data = amaranth.read_calorie_data(abs_fdc_data_dir)
   calorie_data = calorie_data[[
       'description', 'data_type', 'name', 'amount', 'unit_name'
   ]]  # keep only relevant cols
