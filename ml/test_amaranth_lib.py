@@ -189,7 +189,7 @@ class TestAmaranthHelpers(unittest.TestCase):
         amaranth.max_sequence_length([[1], [1, 2, 3], [1, 2, 3, 4, 5]]), 5,
         'Max sequence length of multiple lists is correct')
 
-  def test_add_input_labels(self):
+  def test_pad_list(self):
     raise NotImplementedError
 
 
