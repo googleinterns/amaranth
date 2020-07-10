@@ -179,7 +179,15 @@ class TestAmaranthHelpers(unittest.TestCase):
         'Duplicate words in different strings are not counted')
 
   def test_max_sequence_length(self):
-    raise NotImplementedError
+    self.assertEqual(
+        amaranth.max_sequence_length([]), 0,
+        'Max sequence length of empty list is 0')
+    self.assertEqual(
+        amaranth.max_sequence_length(['1', '123', '12345']), 5,
+        'Max sequence length of multiple strings is correct')
+    self.assertEqual(
+        amaranth.max_sequence_length([[1], [1, 2, 3], [1, 2, 3, 4, 5]]), 5,
+        'Max sequence length of multiple lists is correct')
 
   def test_add_input_labels(self):
     raise NotImplementedError
