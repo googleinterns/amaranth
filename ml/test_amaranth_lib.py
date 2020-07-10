@@ -166,7 +166,17 @@ class TestAmaranthHelpers(unittest.TestCase):
          'dishes'))
 
   def test_num_unique_words(self):
-    raise NotImplementedError
+    self.assertEqual(
+        amaranth.num_unique_words([]), 0, 'No unique words in an empty list')
+    self.assertEqual(
+        amaranth.num_unique_words(['one two three', 'four five six']), 6,
+        'Unique words are counted across all strings in iterable')
+    self.assertEqual(
+        amaranth.num_unique_words(['one one two']), 2,
+        'Duplicate words in the same string are not counted')
+    self.assertEqual(
+        amaranth.num_unique_words(['one two three', 'three four five']), 5,
+        'Duplicate words in different strings are not counted')
 
   def test_max_sequence_length(self):
     raise NotImplementedError
