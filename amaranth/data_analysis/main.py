@@ -8,7 +8,7 @@ import os
 import pandas as pd
 
 # %% define constants
-FDC_DATA_DIR = '../data/fdc/'
+FDC_DATA_DIR = '../../data/fdc/'
 LOW_CALORIE_THRESHOLD = 100
 HIGH_CALORIE_THRESHOLD = 500
 

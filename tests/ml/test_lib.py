@@ -2,9 +2,10 @@
 """These tests ensure correctness for the helper functions in amaranth_lib."""
 
 import unittest
-import ml.amaranth_lib as amaranth
 import numpy as np
 import pandas as pd
+
+import amaranth.ml.lib as amaranth
 
 
 class TestAmaranthHelpers(unittest.TestCase):
