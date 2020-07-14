@@ -15,6 +15,7 @@ from amaranth.ml import lib
 
 # Location of source data set
 FDC_DATA_DIR = '../../data/fdc/'
+MODEL_IMG_DIR = '../../docs/img/'
 
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
@@ -90,7 +91,11 @@ def main():
   model._layers = [  # Workaround for bug in keras.util.plot_model pylint: disable=protected-access
       layer for layer in model._layers if not isinstance(layer, dict)  # pylint: disable=protected-access
   ]
-  keras.utils.plot_model(model, show_layer_names=False, show_shapes=True)
+  keras.utils.plot_model(
+      model,
+      to_file=os.path.join(current_dir, MODEL_IMG_DIR, 'model.png'),
+      show_layer_names=False,
+      show_shapes=True)
 
   # Split dataset
   train_set, test_set = sklearn.model_selection.train_test_split(
