@@ -1,5 +1,0 @@
-{
-    "python.pythonPath": "/usr/local/google/home/tlauerman/.pyenv/versions/3.7.7/bin/python",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
-}

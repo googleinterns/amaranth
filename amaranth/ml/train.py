@@ -1,9 +1,8 @@
 # Lint as: python3
-"""This script is used to import data and build/train a nutrient-prediction ML model."""
+"""This script is used to build and train a nutrient-prediction ML model."""
 
 # Define imports and constants
 import os
-import amaranth_lib as amaranth
 import numpy as np
 import pandas as pd
 import sklearn.model_selection
@@ -11,12 +10,12 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing import text
 
-# Location of source data set
-FDC_DATA_DIR = '../data/fdc/'
+import amaranth
+from amaranth.ml import lib
 
-# Thresholds for what defines "high" and "low" calorie
-LOW_CALORIE_THRESHOLD = 100
-HIGH_CALORIE_THRESHOLD = 500
+# Location of source data set
+FDC_DATA_DIR = '../../data/fdc/'
+MODEL_IMG_DIR = '../../docs/img/'
 
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
@@ -38,27 +37,27 @@ def main():
       abs_fdc_data_dir, 'nutrient.csv')).rename(columns={'id': 'nutrient_id'})
   food_nutrient = pd.read_csv(
       os.path.join(abs_fdc_data_dir, 'food_nutrient.csv'))
-  combined = amaranth.combine_dataframes('fdc_id', food, food_nutrient)
-  combined = amaranth.combine_dataframes('nutrient_id', combined, nutrient)
+  combined = lib.combine_dataframes('fdc_id', food, food_nutrient)
+  combined = lib.combine_dataframes('nutrient_id', combined, nutrient)
 
   # Extract and format calorie data
-  calorie_data = amaranth.get_calorie_data(combined, 'kcal')
+  calorie_data = lib.get_calorie_data(combined, 'kcal')
   calorie_data = calorie_data[[
       'description', 'data_type', 'name', 'amount', 'unit_name'
   ]]  # Keep only relevant cols
-  calorie_data = amaranth.clean_data(calorie_data)
-  amaranth.add_calorie_labels(
+  calorie_data = lib.clean_data(calorie_data)
+  lib.add_calorie_labels(
       calorie_data,
-      low_calorie_threshold=LOW_CALORIE_THRESHOLD,
-      high_calorie_threshold=HIGH_CALORIE_THRESHOLD)
+      low_calorie_threshold=amaranth.LOW_CALORIE_THRESHOLD,
+      high_calorie_threshold=amaranth.HIGH_CALORIE_THRESHOLD)
 
   # Do some preprocessing and calculations for encoding
   calorie_data['description'] = calorie_data['description'].str.replace(
       ',', '').str.lower()
   corpus = calorie_data['description']
-  vocab_size = amaranth.num_unique_words(corpus)
+  vocab_size = lib.num_unique_words(corpus)
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
-  max_corpus_length = amaranth.max_sequence_length(tokenized_corpus)
+  max_corpus_length = lib.max_sequence_length(tokenized_corpus)
 
   # Encode 'description' into new column 'input'
   calorie_data['input'] = calorie_data.apply(
@@ -66,7 +65,7 @@ def main():
 
   # Pad 'input' column to all be the same length for embedding input
   calorie_data['input'] = calorie_data.apply(
-      lambda row: amaranth.pad_list(row['input'], max_corpus_length, 0), axis=1)
+      lambda row: lib.pad_list(row['input'], max_corpus_length, 0), axis=1)
 
   # Create model
   model = keras.Sequential([
@@ -92,7 +91,11 @@ def main():
   model._layers = [  # Workaround for bug in keras.util.plot_model pylint: disable=protected-access
       layer for layer in model._layers if not isinstance(layer, dict)  # pylint: disable=protected-access
   ]
-  keras.utils.plot_model(model, show_layer_names=False, show_shapes=True)
+  keras.utils.plot_model(
+      model,
+      to_file=os.path.join(current_dir, MODEL_IMG_DIR, 'model.png'),
+      show_layer_names=False,
+      show_shapes=True)
 
   # Split dataset
   train_set, test_set = sklearn.model_selection.train_test_split(

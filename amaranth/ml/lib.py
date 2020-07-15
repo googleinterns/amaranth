@@ -27,8 +27,8 @@ def combine_dataframes(index: str, *dataframes: pd.DataFrame):
     return pd.DataFrame()
 
   combined_dataframe = dataframes[0].set_index(index)
-  for df in dataframes[1:]:
-    combined_dataframe = combined_dataframe.join(df.set_index(index))
+  for dataf in dataframes[1:]:
+    combined_dataframe = combined_dataframe.join(dataf.set_index(index))
 
   return combined_dataframe
 
@@ -98,10 +98,10 @@ def add_calorie_labels(calorie_data: pd.DataFrame, low_calorie_threshold: float,
   def label_row(calorie_data_row):
     if calorie_data_row['amount'] < low_calorie_threshold:
       return [1, 0, 0]  # low calorie
-    elif calorie_data_row['amount'] > high_calorie_threshold:
+    if calorie_data_row['amount'] > high_calorie_threshold:
       return [0, 0, 1]  # high calorie
-    else:
-      return [0, 1, 0]  # avg calorie
+
+    return [0, 1, 0]  # avg calorie
 
   calorie_data['calorie_label'] = calorie_data.apply(label_row, axis=1)
 
