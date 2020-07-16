@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
+import tensorflow_addons as tfa
 from tensorflow import keras
 from tensorflow.keras.preprocessing import text
 
@@ -83,7 +84,8 @@ def main():
       metrics=[
           'categorical_accuracy',
           keras.metrics.Precision(),
-          keras.metrics.Recall()
+          keras.metrics.Recall(),
+          tfa.metrics.F1Score(num_classes=3),
       ])
 
   # Model stats
@@ -117,7 +119,20 @@ def main():
       np.stack(test_set['calorie_label']),
   )
 
+  print('\nResults:')
   print(results)
+
+  # Save test set predictions, generate confusion matrix
+  predictions = model.predict(np.stack(test_set['input']))
+  predictions = tf.argmax(predictions, axis=-1)
+
+  confusion = tf.math.confusion_matrix(
+      tf.argmax(np.stack(test_set['calorie_label']), axis=-1), predictions)
+
+  print('\nConfusion matrix')
+  print('x-axis: prediction')
+  print('y-axis: actual value')
+  print(confusion)
 
 
 if __name__ == '__main__':
