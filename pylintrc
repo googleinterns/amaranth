@@ -65,6 +65,7 @@ disable=
     locally-disabled,
     missing-docstring,
     fixme,
+    too-many-locals,
     # disabled by default,
     import-star-module-level,
     old-octal-literal,
