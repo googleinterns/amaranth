@@ -119,7 +119,20 @@ def main():
       np.stack(test_set['calorie_label']),
   )
 
+  print('\nResults:')
   print(results)
+
+  # Save test set predictions, generate confusion matrix
+  predictions = model.predict(np.stack(test_set['input']))
+  predictions = tf.argmax(predictions, axis=-1)
+
+  confusion = tf.math.confusion_matrix(
+      tf.argmax(np.stack(test_set['calorie_label']), axis=-1), predictions)
+
+  print('\nConfusion matrix')
+  print('x-axis: prediction')
+  print('y-axis: actual value')
+  print(confusion)
 
 
 if __name__ == '__main__':
