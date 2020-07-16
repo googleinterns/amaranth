@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
+import tensorflow_addons as tfa
 from tensorflow import keras
 from tensorflow.keras.preprocessing import text
 
@@ -83,7 +84,8 @@ def main():
       metrics=[
           'categorical_accuracy',
           keras.metrics.Precision(),
-          keras.metrics.Recall()
+          keras.metrics.Recall(),
+          tfa.metrics.F1Score(num_classes=3),
       ])
 
   # Model stats
