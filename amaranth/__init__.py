@@ -4,4 +4,4 @@ The only current use of this class is to define common constants.
 """
 
 LOW_CALORIE_THRESHOLD = 100
-HIGH_CALORIE_THRESHOLD = 500
+HIGH_CALORIE_THRESHOLD = 300
