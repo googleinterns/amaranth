@@ -14,9 +14,9 @@ from tensorflow.keras.preprocessing import text
 import amaranth
 from amaranth.ml import lib
 
-# Location of source data set
-FDC_DATA_DIR = '../../data/fdc/'
-MODEL_IMG_DIR = '../../docs/img/'
+# Directories to write files to
+FDC_DATA_DIR = '../../data/fdc/'  # Data set directory
+MODEL_IMG_DIR = '../../docs/img/'  # Model image directory
 
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
