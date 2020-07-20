@@ -110,6 +110,7 @@ def main():
   model.fit(
       np.stack(train_set['input']),
       np.stack(train_set['calorie_label']),
+      epochs=10,
       validation_split=VALIDATION_FRAC / (TRAIN_FRAC + VALIDATION_FRAC),
       callbacks=[keras.callbacks.TensorBoard()],
   )
