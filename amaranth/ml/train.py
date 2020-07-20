@@ -14,9 +14,10 @@ from tensorflow.keras.preprocessing import text
 import amaranth
 from amaranth.ml import lib
 
-# Location of source data set
-FDC_DATA_DIR = '../../data/fdc/'
-MODEL_IMG_DIR = '../../docs/img/'
+# Directories to write files to
+FDC_DATA_DIR = '../../data/fdc/'  # Data set directory
+MODEL_IMG_DIR = '../../docs/img/'  # Model image directory
+RESOURCES_DIR = '../resources/'  # Project resources directory
 
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
@@ -133,6 +134,9 @@ def main():
   print('x-axis: prediction')
   print('y-axis: actual value')
   print(confusion)
+
+  # Save model to file
+  model.save(os.path.join(current_dir, RESOURCES_DIR, 'model'))
 
 
 if __name__ == '__main__':
