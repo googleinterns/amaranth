@@ -9,7 +9,6 @@ import sklearn.model_selection
 import tensorflow as tf
 import tensorflow_addons as tfa
 from tensorflow import keras
-from tensorflow.keras.preprocessing import text
 
 import amaranth
 from amaranth.ml import lib
@@ -54,20 +53,10 @@ def main():
       high_calorie_threshold=amaranth.HIGH_CALORIE_THRESHOLD)
 
   # Do some preprocessing and calculations for encoding
-  calorie_data['description'] = calorie_data['description'].str.replace(
-      ',', '').str.lower()
-  corpus = calorie_data['description']
+  corpus = calorie_data['description'].str.replace(',', '').str.lower()
   vocab_size = lib.num_unique_words(corpus)
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
   max_corpus_length = lib.max_sequence_length(tokenized_corpus)
-
-  # Encode 'description' into new column 'input'
-  calorie_data['input'] = calorie_data.apply(
-      lambda row: text.one_hot(row['description'], vocab_size), axis=1)
-
-  # Pad 'input' column to all be the same length for embedding input
-  calorie_data['input'] = calorie_data.apply(
-      lambda row: lib.pad_list(row['input'], max_corpus_length, 0), axis=1)
 
   # Create TextVectorization layer
   vectorize_layer = keras.layers.experimental.preprocessing.TextVectorization(
