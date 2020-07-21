@@ -69,8 +69,18 @@ def main():
   calorie_data['input'] = calorie_data.apply(
       lambda row: lib.pad_list(row['input'], max_corpus_length, 0), axis=1)
 
+  # Create TextVectorization layer
+  vectorize_layer = keras.layers.experimental.preprocessing.TextVectorization(
+      max_tokens=vocab_size,
+      output_sequence_length=max_corpus_length,
+  )
+
+  vectorize_layer.adapt(calorie_data['description'].to_numpy())
+
   # Create model
   model = keras.Sequential([
+      keras.layers.Input(shape=(1,), dtype=tf.string),
+      vectorize_layer,
       keras.layers.Embedding(
           vocab_size, int(vocab_size**(1 / 4)), input_length=max_corpus_length),
       keras.layers.Flatten(),
@@ -108,7 +118,7 @@ def main():
 
   # Train model
   model.fit(
-      np.stack(train_set['input']),
+      np.stack(train_set['description']),
       np.stack(train_set['calorie_label']),
       epochs=10,
       validation_split=VALIDATION_FRAC / (TRAIN_FRAC + VALIDATION_FRAC),
@@ -117,7 +127,7 @@ def main():
 
   # Evaluate model
   results = model.evaluate(
-      np.stack(test_set['input']),
+      np.stack(test_set['description']),
       np.stack(test_set['calorie_label']),
   )
 
@@ -125,7 +135,7 @@ def main():
   print(results)
 
   # Save test set predictions, generate confusion matrix
-  predictions = model.predict(np.stack(test_set['input']))
+  predictions = model.predict(np.stack(test_set['description']))
   predictions = tf.argmax(predictions, axis=-1)
 
   confusion = tf.math.confusion_matrix(
