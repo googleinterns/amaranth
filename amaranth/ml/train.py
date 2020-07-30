@@ -9,6 +9,7 @@ import sklearn.model_selection
 import tensorflow as tf
 import tensorflow_addons as tfa
 from tensorflow import keras
+from tensorflow.keras.preprocessing import text
 
 import amaranth
 from amaranth.ml import lib
@@ -53,23 +54,23 @@ def main():
       high_calorie_threshold=amaranth.HIGH_CALORIE_THRESHOLD)
 
   # Do some preprocessing and calculations for encoding
-  corpus = calorie_data['description'].str.replace(',', '').str.lower()
+  calorie_data['description'] = calorie_data['description'].str.replace(
+      ',', '').str.lower()
+  corpus = calorie_data['description']
   vocab_size = lib.num_unique_words(corpus)
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
   max_corpus_length = lib.max_sequence_length(tokenized_corpus)
 
-  # Create TextVectorization layer
-  vectorize_layer = keras.layers.experimental.preprocessing.TextVectorization(
-      max_tokens=vocab_size,
-      output_sequence_length=max_corpus_length,
-  )
+  # Encode 'description' into new column 'input'
+  calorie_data['input'] = calorie_data.apply(
+      lambda row: text.one_hot(row['description'], vocab_size), axis=1)
 
-  vectorize_layer.adapt(calorie_data['description'].to_numpy())
+  # Pad 'input' column to all be the same length for embedding input
+  calorie_data['input'] = calorie_data.apply(
+      lambda row: lib.pad_list(row['input'], max_corpus_length, 0), axis=1)
 
   # Create model
   model = keras.Sequential([
-      keras.layers.Input(shape=(1,), dtype=tf.string),
-      vectorize_layer,
       keras.layers.Embedding(
           vocab_size, int(vocab_size**(1 / 4)), input_length=max_corpus_length),
       keras.layers.Flatten(),
@@ -107,7 +108,7 @@ def main():
 
   # Train model
   model.fit(
-      np.stack(train_set['description']),
+      np.stack(train_set['input']),
       np.stack(train_set['calorie_label']),
       epochs=10,
       validation_split=VALIDATION_FRAC / (TRAIN_FRAC + VALIDATION_FRAC),
@@ -116,7 +117,7 @@ def main():
 
   # Evaluate model
   results = model.evaluate(
-      np.stack(test_set['description']),
+      np.stack(test_set['input']),
       np.stack(test_set['calorie_label']),
   )
 
@@ -124,7 +125,7 @@ def main():
   print(results)
 
   # Save test set predictions, generate confusion matrix
-  predictions = model.predict(np.stack(test_set['description']))
+  predictions = model.predict(np.stack(test_set['input']))
   predictions = tf.argmax(predictions, axis=-1)
 
   confusion = tf.math.confusion_matrix(
