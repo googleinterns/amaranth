@@ -3,6 +3,7 @@
 
 # Define imports and constants
 import os
+import json
 import numpy as np
 import pandas as pd
 import sklearn.model_selection
@@ -17,6 +18,7 @@ from amaranth.ml import lib
 FDC_DATA_DIR = '../../data/fdc/'  # Data set directory
 MODEL_IMG_DIR = '../../docs/img/'  # Model image directory
 RESOURCES_DIR = '../resources/'  # Project resources directory
+CHROME_EXT_DIR = 'amaranth-chrome-ext/' # Chrome extension directory
 
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
@@ -67,6 +69,17 @@ def main():
   # Pad 'input' column to all be the same length for embedding input
   calorie_data['input'] = calorie_data.apply(
       lambda row: lib.pad_list(row['input'], max_corpus_length, 0), axis=1)
+
+  # Create dict for mapping words to int
+  tokenizer = dict()
+  for _, row in calorie_data.iterrows():
+    for idx, word in enumerate(row['description'].split(' ')):
+      tokenizer[word] = row['input'][idx]
+
+  json.dump(
+      tokenizer,
+      open(os.path.join(CHROME_EXT_DIR, 'tokenizer.json'), 'w'),
+      separators=(',', ':'))
 
   # Create model
   model = keras.Sequential([
