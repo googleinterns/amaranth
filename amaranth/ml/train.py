@@ -76,23 +76,23 @@ def main():
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
   max_corpus_length = lib.max_sequence_length(tokenized_corpus)
 
-  # Encode 'description' into new column 'input'
-  calorie_data['tokenized'] = calorie_data.apply(
-      lambda row: text.one_hot(row['description'], vocab_size), axis=1)
+  # Count appearances of each word in dataset
+  tokenizer_cnt = defaultdict(lambda: 0)
+  for dish_name in calorie_data['description']:
+    for token in dish_name.split():
+      tokenizer_cnt[token] += 1
 
-  # Create tokenizer to encode input text
-  tokenizer = dict()  # Dictionary mapping each unique word to a unique int
-  tokenizer_cnt = defaultdict(
-      lambda: 0)  # Counts appearances of each word in tokenizer
-  for _, row in calorie_data.iterrows():
-    for idx, word in enumerate(row['description'].split()):
-      tokenizer[word] = row['tokenized'][idx]
-      tokenizer_cnt[word] += 1
+  # Only 'remember' words that appear at least MIN_TOKEN_APPEARANCE times
+  keep_tokens = [
+      token for token, cnt in tokenizer_cnt.items()
+      if cnt >= MIN_TOKEN_APPEARANCE
+  ]
 
-  # Only 'remember' words that appear at least 3 times
-  for word, cnt in tokenizer_cnt.items():
-    if cnt < MIN_TOKEN_APPEARANCE:
-      del tokenizer[word]
+  # Assign each token a unique number and create a dict that maps those tokens
+  # to their unique value
+  rev_tokenizer_lst = enumerate(keep_tokens)
+  tokenizer_lst = [(token, idx) for idx, token in rev_tokenizer_lst]
+  tokenizer = dict(tokenizer_lst)
 
   # The string 'OOV' denotes words that are out-of-vocabulary
   # It's equal to zero because keras' one_hot function generates indices that
