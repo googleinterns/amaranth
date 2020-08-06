@@ -77,7 +77,7 @@ def main():
   max_corpus_length = lib.max_sequence_length(tokenized_corpus)
 
   # Count appearances of each word in dataset
-  tokenizer_cnt = defaultdict(lambda: 0)
+  tokenizer_cnt = defaultdict(int)
   for dish_name in calorie_data['description']:
     for token in dish_name.split():
       tokenizer_cnt[token] += 1
