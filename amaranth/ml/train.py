@@ -121,7 +121,9 @@ def main():
   # Create model
   model = keras.Sequential([
       keras.layers.Embedding(
-          vocab_size, int(vocab_size**(1 / 4)), input_length=max_corpus_length),
+          vocab_size + 1,
+          int((vocab_size + 1)**(1 / 4)),
+          input_length=max_corpus_length),
       keras.layers.Flatten(),
       keras.layers.Dense(32, activation='sigmoid'),
       keras.layers.Dense(10, activation='sigmoid'),
