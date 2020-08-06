@@ -25,7 +25,7 @@ TRAIN_FRAC = 0.6
 VALIDATION_FRAC = 0.2
 TEST_FRAC = 0.2
 # Times a token needs to appear to be in model's vocab
-MIN_TOKEN_APPEARANCE = 0
+MIN_TOKEN_APPEARANCE = 3
 # Chars to remove from dish names
 DISH_NAME_FILTERS = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n'
 
