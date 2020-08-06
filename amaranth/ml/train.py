@@ -4,13 +4,12 @@
 # Define imports and constants
 import os
 import json
+from collections import defaultdict
 import numpy as np
 import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
-from collections import defaultdict
 from tensorflow import keras
-from tensorflow.keras.preprocessing import text
 
 import amaranth
 from amaranth.ml import lib
