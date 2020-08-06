@@ -97,10 +97,10 @@ def main():
     if cnt < MIN_TOKEN_APPEARANCE:
       del tokenizer[word]
 
-  # The empty string denotes words that are OOV (out-of-vocabulary)
-  # It is equal to vocab_size because all values in the tokenizer should be less
-  # than vocab_size
-  tokenizer[''] = 0
+  # The string 'OOV' denotes words that are out-of-vocabulary
+  # It's equal to zero because keras' one_hot function generates indices that
+  # are in the range [1, vocab_size], so zero is free.
+  tokenizer['OOV'] = 0
 
   json.dump(
       tokenizer,
@@ -109,7 +109,7 @@ def main():
 
   calorie_data['input'] = calorie_data.apply(
       lambda row: [
-          tokenizer[token] if token in tokenizer else tokenizer['']
+          tokenizer[token] if token in tokenizer else tokenizer['OOV']
           for token in row['description'].split()
       ],
       axis=1)
