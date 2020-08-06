@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
+from collections import defaultdict
 from tensorflow import keras
 from tensorflow.keras.preprocessing import text
 
@@ -82,15 +83,12 @@ def main():
 
   # Create tokenizer to encode input text
   tokenizer = dict()  # Dictionary mapping each unique word to a unique int
-  tokenizer_cnt = dict()  # Counts appearances of each word in tokenizer
+  tokenizer_cnt = defaultdict(
+      lambda: 0)  # Counts appearances of each word in tokenizer
   for _, row in calorie_data.iterrows():
     for idx, word in enumerate(row['description'].split()):
       tokenizer[word] = row['tokenized'][idx]
-
-      if word in tokenizer_cnt:
-        tokenizer_cnt[word] += 1
-      else:
-        tokenizer_cnt[word] = 1
+      tokenizer_cnt[word] += 1
 
   # Only 'remember' words that appear at least 3 times
   for word, cnt in tokenizer_cnt.items():
