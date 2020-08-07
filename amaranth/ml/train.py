@@ -4,12 +4,12 @@
 # Define imports and constants
 import os
 import json
+from collections import defaultdict
 import numpy as np
 import pandas as pd
 import sklearn.model_selection
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.preprocessing import text
 
 import amaranth
 from amaranth.ml import lib
@@ -25,7 +25,7 @@ TRAIN_FRAC = 0.6
 VALIDATION_FRAC = 0.2
 TEST_FRAC = 0.2
 # Times a token needs to appear to be in model's vocab
-MIN_TOKEN_APPEARANCE = 0
+MIN_TOKEN_APPEARANCE = 3
 # Chars to remove from dish names
 DISH_NAME_FILTERS = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n'
 
@@ -76,31 +76,28 @@ def main():
   tokenized_corpus = corpus.map(lambda desc: desc.split(' '))
   max_corpus_length = lib.max_sequence_length(tokenized_corpus)
 
-  # Encode 'description' into new column 'input'
-  calorie_data['tokenized'] = calorie_data.apply(
-      lambda row: text.one_hot(row['description'], vocab_size), axis=1)
+  # Count appearances of each word in dataset
+  tokenizer_cnt = defaultdict(int)
+  for dish_name in calorie_data['description']:
+    for token in dish_name.split():
+      tokenizer_cnt[token] += 1
 
-  # Create tokenizer to encode input text
-  tokenizer = dict()  # Dictionary mapping each unique word to a unique int
-  tokenizer_cnt = dict()  # Counts appearances of each word in tokenizer
-  for _, row in calorie_data.iterrows():
-    for idx, word in enumerate(row['description'].split()):
-      tokenizer[word] = row['tokenized'][idx]
+  # Only 'remember' words that appear at least MIN_TOKEN_APPEARANCE times
+  keep_tokens = [
+      token for token, cnt in tokenizer_cnt.items()
+      if cnt >= MIN_TOKEN_APPEARANCE
+  ]
 
-      if word in tokenizer_cnt:
-        tokenizer_cnt[word] += 1
-      else:
-        tokenizer_cnt[word] = 1
+  # Assign each token a unique number and create a dict that maps those tokens
+  # to their unique value
+  rev_tokenizer_lst = enumerate(keep_tokens)
+  tokenizer_lst = [(token, idx) for idx, token in rev_tokenizer_lst]
+  tokenizer = dict(tokenizer_lst)
 
-  # Only 'remember' words that appear at least 3 times
-  for word, cnt in tokenizer_cnt.items():
-    if cnt < MIN_TOKEN_APPEARANCE:
-      del tokenizer[word]
-
-  # The empty string denotes words that are OOV (out-of-vocabulary)
-  # It is equal to vocab_size because all values in the tokenizer should be less
-  # than vocab_size
-  tokenizer[''] = 0
+  # The string 'OOV' denotes words that are out-of-vocabulary
+  # It's equal to zero because keras' one_hot function generates indices that
+  # are in the range [1, vocab_size], so zero is free.
+  tokenizer['OOV'] = 0
 
   json.dump(
       tokenizer,
@@ -109,7 +106,7 @@ def main():
 
   calorie_data['input'] = calorie_data.apply(
       lambda row: [
-          tokenizer[token] if token in tokenizer else tokenizer['']
+          tokenizer[token] if token in tokenizer else tokenizer['OOV']
           for token in row['description'].split()
       ],
       axis=1)
@@ -121,7 +118,9 @@ def main():
   # Create model
   model = keras.Sequential([
       keras.layers.Embedding(
-          vocab_size, int(vocab_size**(1 / 4)), input_length=max_corpus_length),
+          vocab_size + 1,
+          int((vocab_size + 1)**(1 / 4)),
+          input_length=max_corpus_length),
       keras.layers.Flatten(),
       keras.layers.Dense(32, activation='sigmoid'),
       keras.layers.Dense(10, activation='sigmoid'),
