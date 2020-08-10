@@ -1,5 +1,5 @@
-const mlModelPath = chrome.runtime.getURL('model/model.json');
-const tokenizerPath = chrome.runtime.getURL('tokenizer.json');
+const mlModelPath = chrome.runtime.getURL('assets/model/model.json');
+const tokenizerPath = chrome.runtime.getURL('assets/tokenizer.json');
 
 async function main() {
   // Load tokenizer dictionary
