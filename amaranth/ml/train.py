@@ -83,10 +83,10 @@ def main():
       tokenizer_cnt[token] += 1
 
   # Only 'remember' words that appear at least MIN_TOKEN_APPEARANCE times
-  keep_tokens = [
-      token for token, cnt in tokenizer_cnt.items()
-      if cnt >= MIN_TOKEN_APPEARANCE
-  ]
+  keep_tokens = []
+  for token, cnt in tokenizer_cnt.items():
+      if cnt >= MIN_TOKEN_APPEARANCE:
+          keep_tokens.append(token)
 
   # Assign each token a unique number and create a dict that maps those tokens
   # to their unique value
