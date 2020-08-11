@@ -7,12 +7,8 @@ async function main() {
   const tokenizerObj = await response.json();
   const tokenizer = new Map(Object.entries(tokenizerObj));
 
-  console.log(tokenizer.entries());
-  console.log(`Tokenizer dict size: ${tokenizer.size}`);
-
   // Attempt to load ML model
   const model = await tf.loadLayersModel(mlModelPath);
-  console.log(model.summary());
 }
 
 main();
