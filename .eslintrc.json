@@ -1,0 +1,18 @@
+{
+    "env": {
+        "es6": true,
+        "browser": true,
+        "webextensions": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
+    "extends": ["eslint:recommended", "google"],
+    "rules": {
+        // Additional, per-project rules
+    },
+    "globals": {
+        // Global constants
+        "tf": false
+    }
+  }
