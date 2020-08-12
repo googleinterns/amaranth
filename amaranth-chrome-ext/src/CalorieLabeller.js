@@ -45,7 +45,7 @@ class CalorieLabeller {
     const input = AmaranthUtil.padArray(tokenizedDishName, 43, 0).slice(0, 43);
 
     // Step 5: feed dish name to ML model
-    const inputTensor = tf.tensor(input);
+    const inputTensor = tf.tensor([input]);
     const calorieLabels = this.model_.predict(inputTensor);
 
     // Step 6: take softmax of outputs to get dish label
