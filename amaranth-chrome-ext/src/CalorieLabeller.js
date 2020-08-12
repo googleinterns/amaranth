@@ -23,7 +23,7 @@ class CalorieLabeller {
    */
   label(dishName) {
     // Step 1: remove special characters from dish name
-    dishName = this.removeSpecialCharacters_(dishName);
+    dishName = AmaranthUtil.removeSpecialCharacters(dishName);
 
     // Step 2: convert dish name to lower case
     dishName = dishName.toLowerCase();
@@ -67,24 +67,5 @@ class CalorieLabeller {
       // If there is a tie anywhere, dish is deemed average calorie
       return CalorieLabel.AVERAGE_CALORIE;
     }
-  }
-
-  /**
-   * Removes special characters from a string.
-   * @private
-   * @param {string} str String to remove special characters from
-   * @param {string} filters Characters to remove from str
-   * @return {string} `str` with all characters in `filters` removed
-   */
-  removeSpecialCharacters_(
-      str, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n') {
-    let newStr = '';
-    for (const char of str) {
-      if (!filters.includes(char)) {
-        newStr += char;
-      }
-    }
-
-    return newStr;
   }
 }
