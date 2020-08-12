@@ -2,6 +2,7 @@
 
 setup:
 	pip install -r requirements.txt
+	npm install --prefix amaranth-chrome-ext/
 
 # Amaranth ML commands
 run-interactive:
@@ -18,4 +19,4 @@ lint-python:
 
 # Amaranth Chrome Extension commands
 lint-js:
-	node_modules/.bin/eslint amaranth-chrome-ext/src/
+	npm run lint --prefix amaranth-chrome-ext/
