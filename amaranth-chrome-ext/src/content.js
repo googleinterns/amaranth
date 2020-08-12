@@ -12,6 +12,15 @@ async function main() {
 
   // Attempt to load ML model
   const model = await tf.loadLayersModel(mlModelPath);
+
+  // Create calorie labeller object
+  const labeller = new CalorieLabeller(tokenizer, model);
+  
+  console.log(labeller.label('pop tart'));
+  console.log(labeller.label('water'));
+  console.log(labeller.label('hamburger'));
+  console.log(labeller.label('cheeseburger'));
+  console.log(labeller.label('double cheeseburger'));
 }
 
 main();
