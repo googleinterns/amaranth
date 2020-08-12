@@ -15,7 +15,7 @@ async function main() {
 
   // Create calorie labeller object
   const labeller = new CalorieLabeller(tokenizer, model);
-  
+
   console.log(labeller.label('pop tart'));
   console.log(labeller.label('water'));
   console.log(labeller.label('hamburger'));
