@@ -10,6 +10,8 @@
     "extends": ["eslint:recommended", "google"],
     "rules": {
         // Additional, per-project rules
+        "no-unused-vars": "off",
+        "no-undef": "off"
     },
     "globals": {
         // Global constants
