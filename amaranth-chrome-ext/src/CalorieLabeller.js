@@ -50,7 +50,7 @@ class CalorieLabeller {
 
     // Step 6: take softmax of outputs to get dish label
     // Confidence that the dish is low cal, avg cal, or high cal
-    const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels.arraySync();
+    const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels.arraySync()[0];
 
     if (lowCalConf > avgCalConf && lowCalConf > hiCalConf) {
       // Dish is most confidently low calorie
