@@ -10,7 +10,7 @@ class CalorieLabeller {
    * @param {tf.LayersModel} model Tensorflow.js layers ML model
    */
   constructor(tokenizer, model) {
-    /** @private @const @type {Map<string, int>} */
+    /** @private @const @type {Map<string, number>} */
     this.tokenizer_ = tokenizer;
     /** @private @const @type {tf.LayersModel} */
     this.model_ = model;
@@ -24,14 +24,33 @@ class CalorieLabeller {
   label(dishName) {
     // Step 1: remove special characters from dish name
     dishName = this.removeSpecialCharacters_(dishName);
+
     // Step 2: convert dish name to lower case
     dishName = dishName.toLowerCase();
+
     // Step 3: split dish name on spaces
-    const dishNameTokens = dishName.split(/\s+/);
-    // Step 4: feed dish name to ML model
-    const inputTensor = tf.tensor(dishNameTokens);
+    const splitDishName = dishName.split(/\s+/);
+
+    // Step 4: tokenize dish names
+    const tokenizedDishName = splitDishName.map((word) => {
+      if (this.tokenizer_.has(word)) {
+        return this.tokenizer_.get(word);
+      } else {
+        // If word not present in tokenizer, return out-of-vocabulary token
+        return this.tokenizer_.get('OOV');
+      }
+    });
+
+    // Step 5: pad tokenized dish name to exactly length 43
+    while (tokenizedDishName.length < 43) {
+      tokenizedDishName.push(0);
+    }
+    const input = tokenizedDishName.slice(0, 43);
+
+    // Step 5: feed dish name to ML model
+    const inputTensor = tf.tensor(input);
     const calorieLabels = this.model_.predict(inputTensor);
-    // Step 5: take softmax of outputs to get dish label
+    // Step 6: take softmax of outputs to get dish label
     // Confidence that the dish is low cal, avg cal, or high cal
     const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels;
 
