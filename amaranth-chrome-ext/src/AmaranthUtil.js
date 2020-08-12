@@ -42,3 +42,5 @@ class AmaranthUtil {
     return arr;
   }
 }
+
+module.exports = AmaranthUtil;
