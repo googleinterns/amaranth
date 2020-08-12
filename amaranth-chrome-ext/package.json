@@ -1,0 +1,23 @@
+{
+  "name": "amaranth-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension that tells users the calorie content of dishes at a glance.",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-google": "^0.14.0"
+  },
+  "scripts": {
+    "lint": "eslint src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/googleinterns/amaranth.git"
+  },
+  "author": "Tom Lauerman",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/googleinterns/amaranth/issues"
+  },
+  "homepage": "https://github.com/googleinterns/amaranth"
+}
