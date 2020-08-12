@@ -42,14 +42,12 @@ class CalorieLabeller {
     });
 
     // Step 5: pad tokenized dish name to exactly length 43
-    while (tokenizedDishName.length < 43) {
-      tokenizedDishName.push(0);
-    }
-    const input = tokenizedDishName.slice(0, 43);
+    const input = AmaranthUtil.padArray(tokenizedDishName, 43, 0).slice(0, 43);
 
     // Step 5: feed dish name to ML model
     const inputTensor = tf.tensor(input);
     const calorieLabels = this.model_.predict(inputTensor);
+
     // Step 6: take softmax of outputs to get dish label
     // Confidence that the dish is low cal, avg cal, or high cal
     const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels.arraySync();
