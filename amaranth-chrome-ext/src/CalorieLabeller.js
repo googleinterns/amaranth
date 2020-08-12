@@ -1,9 +1,13 @@
+/**
+ * An object which labels a dish name as low, average, or high-calorie.
+ */
 class CalorieLabeller {
   /**
-   * An object which labels a dish name as low, average, or high-calorie.
+   * Creates a CalorieLabeller object.
    * @constructor
-   * @param {Map<string, number>} tokenizer A mapping from dish name tokens to unique integers
-   * @param {tf.LayersModel} model - Tensorflow.js layers ML model
+   * @param {Map<string, number>} tokenizer A mapping from dish name tokens to
+   * unique integers
+   * @param {tf.LayersModel} model Tensorflow.js layers ML model
    */
   constructor(tokenizer, model) {
     /** @private @const @type {Map<string, int>} */
@@ -15,7 +19,7 @@ class CalorieLabeller {
   /**
    * Labels a single dish as high or low calorie.
    * @param {string} dishName The name of the dish to label
-   * @returns {CalorieLabel} The calorie label for the dish named dishName
+   * @return {CalorieLabel} The calorie label for the dish named dishName
    */
   label(dishName) {
     // Step 1: remove special characters from dish name
@@ -51,13 +55,15 @@ class CalorieLabeller {
    * @private
    * @param {string} str String to remove special characters from
    * @param {string} filters Characters to remove from str
-   * @returns {string} `str` with all characters in `filters` removed
+   * @return {string} `str` with all characters in `filters` removed
    */
-  removeSpecialCharacters_(str, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n') {
+  removeSpecialCharacters_(
+      str, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n') {
     let newStr = '';
     for (const char of str) {
-      if (!filters.includes(char))
+      if (!filters.includes(char)) {
         newStr += char;
+      }
     }
 
     return newStr;
