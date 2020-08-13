@@ -1,6 +1,7 @@
 /**
  * Utilities for the Amaranth Chrome extension.
- * All methods are static.
+ * This class is a wrapper for pure helper functions, therefore all
+ * functions should be static and should contain no internal state.
  */
 class AmaranthUtil {
   /**
