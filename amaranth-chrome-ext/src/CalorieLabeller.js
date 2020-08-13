@@ -40,19 +40,14 @@ class CalorieLabeller {
 
     // Confidence that the dish is low cal, avg cal, or high cal
     const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels.arraySync()[0];
+    const maxConfidence = Math.max(lowCalConf, avgCalConf, hiCalConf);
 
-    if (lowCalConf > avgCalConf && lowCalConf > hiCalConf) {
-      // Dish is most confidently low calorie
+    if (lowCalConf == maxConfidence) {
       return CalorieLabel.LOW_CALORIE;
-    } else if (avgCalConf > lowCalConf && avgCalConf > hiCalConf) {
-      // Dish is most confidently average calorie
+    } else if (avgCalConf == maxConfidence) {
       return CalorieLabel.AVERAGE_CALORIE;
-    } else if (hiCalConf > lowCalConf && hiCalConf > avgCalConf) {
-      // Dish is most confidently high calorie
+    } else if (hiCalConf == maxConfidence) {
       return CalorieLabel.HIGH_CALORIE;
-    } else {
-      // If there is a tie anywhere, dish is deemed average calorie
-      return CalorieLabel.AVERAGE_CALORIE;
     }
   }
 }
