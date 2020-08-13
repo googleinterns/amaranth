@@ -1,6 +1,6 @@
 /**
  * Possible calorie labels that can be given to a dish.
- * @enum {number}
+ * @readonly @enum {number} the enum values only function as unique identifiers
  */
 const CalorieLabel = {
   LOW_CALORIE: 0,
