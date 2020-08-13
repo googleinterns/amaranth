@@ -32,13 +32,13 @@ class AmaranthUtil {
    * `desiredLength`. This function will modify the original array `arr` and
    * return it. If the length of `arr` is already greater than `desiredLength`,
    * the original `arr` is returned unchanged.
-   * @template T
+   * @template T Generic type for array values and padding value
    * @param {T[]} arr The array to pad
    * @param {number} desiredLength The length that `arr` should be after padding
    * @param {T} padValue The value to add to `arr` to reach length
    * `desiredLength`
    * @return {T[]} The same array `arr` with as many `padValue`s added as
-   * necessary.
+   * necessary
    */
   static padArray(arr, desiredLength, padValue) {
     while (arr.length < desiredLength) {
