@@ -4,7 +4,6 @@
 class CalorieLabeller {
   /**
    * Creates a CalorieLabeller object.
-   * @constructor
    * @param {Map<string, number>} tokenizer A mapping from dish name tokens to
    * unique integers
    * @param {tf.LayersModel} model Tensorflow.js layers ML model

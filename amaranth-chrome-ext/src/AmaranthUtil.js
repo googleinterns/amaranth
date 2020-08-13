@@ -1,5 +1,5 @@
 /**
- * Utility class with helpful functions for the Amaranth Chrome extension.
+ * Utilities for the Amaranth Chrome extension.
  * All methods are static.
  */
 class AmaranthUtil {
