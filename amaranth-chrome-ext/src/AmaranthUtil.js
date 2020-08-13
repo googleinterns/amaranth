@@ -4,17 +4,22 @@
  * functions should be static and should contain no internal state.
  */
 class AmaranthUtil {
+  /** @public @const @type {string} */
+  static get specialCharacters() {
+    return '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n';
+  }
+
   /**
-   * Removes special characters from a string.
+   * Removes special characters from a string. The characters to remove are
+   * defined in `AmaranthUtil.specialCharacters`.
    * @param {string} str String to remove special characters from
-   * @param {string} filters Characters to remove from str
-   * @return {string} `str` with all characters in `filters` removed
+   * @return {string} A new string with all characters in `str` except those
+   * present in `AmaranthUtil.specialCharacters`
    */
-  static removeSpecialCharacters(
-      str, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n') {
+  static removeSpecialCharacters(str) {
     let newStr = '';
     for (const char of str) {
-      if (!filters.includes(char)) {
+      if (!AmaranthUtil.specialCharacters.includes(char)) {
         newStr += char;
       }
     }
