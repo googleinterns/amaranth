@@ -21,16 +21,9 @@ class CalorieLabeller {
    * @return {CalorieLabel} The calorie label for the dish named dishName
    */
   label(dishName) {
-    // Step 1: remove special characters from dish name
-    dishName = AmaranthUtil.removeSpecialCharacters(dishName);
-
-    // Step 2: convert dish name to lower case
-    dishName = dishName.toLowerCase();
-
-    // Step 3: split dish name on spaces
+    dishName = AmaranthUtil.removeSpecialCharacters(dishName).toLowerCase();
     const splitDishName = dishName.split(/\s+/);
 
-    // Step 4: tokenize dish names
     const tokenizedDishName = splitDishName.map((word) => {
       if (this.tokenizer_.has(word)) {
         return this.tokenizer_.get(word);
@@ -40,14 +33,11 @@ class CalorieLabeller {
       }
     });
 
-    // Step 5: pad tokenized dish name to exactly length 43
+    // Ensure tokenizedDishName.length === 43 for input into ML model
     const input = AmaranthUtil.padArray(tokenizedDishName, 43, 0).slice(0, 43);
-
-    // Step 5: feed dish name to ML model
     const inputTensor = tf.tensor([input]);
     const calorieLabels = this.model_.predict(inputTensor);
 
-    // Step 6: take softmax of outputs to get dish label
     // Confidence that the dish is low cal, avg cal, or high cal
     const [lowCalConf, avgCalConf, hiCalConf] = calorieLabels.arraySync()[0];
 
