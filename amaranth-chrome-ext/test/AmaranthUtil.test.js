@@ -1,21 +1,15 @@
 const AmaranthUtil = require('../src/AmaranthUtil');
 
-test('removeSpecialCharacters: removes space from "hello there!"', () => {
-  expect(AmaranthUtil.removeSpecialCharacters('hello there!', ' '))
-      .toBe('hellothere!');
-});
-
-test('removeSpecialCharacters: removes spaces from "  hello     there ! "',
+test('removeSpecialCharacters: removes special characters from "hello$#@there"',
     () => {
-      expect(AmaranthUtil.removeSpecialCharacters('  hello     there ! ', ' '))
-          .toBe('hellothere!');
+      expect(AmaranthUtil.removeSpecialCharacters('hello$#@there'))
+          .toBe('hellothere');
     });
 
-test(`removeSpecialCharacters: removes special characters from
-    "!@#t$#[(<e#@!*&^()s$#(}]>)*t"`,
+test('removeSpecialCharacters: removes special characters from ' +
+    '"!@#t$#[(<e#@!*&^()s$#(}]>)*t"',
 () => {
-  expect(AmaranthUtil
-      .removeSpecialCharacters('!@#t$#[(<e#@!*&^()s$#(}]>)*t'))
+  expect(AmaranthUtil.removeSpecialCharacters('!@#t$#[(<e#@!*&^()s$#(}]>)*t'))
       .toBe('test');
 });
 
