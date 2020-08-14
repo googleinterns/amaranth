@@ -1,9 +1,10 @@
 /**
  * Possible calorie labels that can be given to a dish.
- * @readonly @enum {number} the enum values only function as unique identifiers
+ * @readonly @enum {string} the enum values function as unique identifiers and a
+ * sort of `toString()` value
  */
 const CalorieLabel = {
-  LOW_CALORIE: 0,
-  AVERAGE_CALORIE: 1,
-  HIGH_CALORIE: 2,
+  LOW_CALORIE: 'Low Calorie',
+  AVERAGE_CALORIE: 'Average Calorie',
+  HIGH_CALORIE: 'High Calorie',
 };
