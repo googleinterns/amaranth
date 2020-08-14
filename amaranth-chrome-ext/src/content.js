@@ -39,8 +39,18 @@ async function labelDish(dishNameElem, labeller) {
   const dishName = dishNameElem.innerHTML;
   const calorieLabel = labeller.label(dishName);
 
+  // Create calorie label element
   const calorieLabelElem = document.createElement('p');
   calorieLabelElem.appendChild(document.createTextNode(calorieLabel));
+
+  if (calorieLabel == CalorieLabel.LOW_CALORIE) {
+    calorieLabelElem.className = 'amaranth-low-calorie';
+  } else if (calorieLabel == CalorieLabel.AVERAGE_CALORIE) {
+    calorieLabelElem.className = 'amaranth-average-calorie';
+  } else if (calorieLabel == CalorieLabel.HIGH_CALORIE) {
+    calorieLabelElem.className = 'amaranth-high-calorie';
+  }
+
   dishNameElem.parentElement.appendChild(calorieLabelElem);
 }
 

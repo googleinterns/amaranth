@@ -5,6 +5,7 @@
     "content_scripts": [
         {
             "matches": ["*://*.grubhub.com/restaurant/*"],
+            "css": ["src/style.css"],
             "js": [
                 "lib/tf.min.js",
                 "src/AmaranthUtil.js",
