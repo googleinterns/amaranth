@@ -52,4 +52,6 @@ class AmaranthUtil {
   }
 }
 
-module.exports = AmaranthUtil;
+if (typeof module !== 'undefined') {
+  module.exports = AmaranthUtil;
+}
