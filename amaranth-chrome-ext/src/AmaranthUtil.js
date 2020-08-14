@@ -13,8 +13,8 @@ class AmaranthUtil {
    * Removes special characters from a string. The characters to remove are
    * defined in `AmaranthUtil.specialCharacters`.
    * @param {string} str String to remove special characters from
-   * @return {string} A new string with all characters in `str` except those
-   * present in `AmaranthUtil.specialCharacters`
+   * @return {string} A new string with all characters in `str` except
+   * characters defined in `AmaranthUtil.specialCharacters`
    */
   static removeSpecialCharacters(str) {
     let newStr = '';
@@ -33,7 +33,7 @@ class AmaranthUtil {
    * return it.
    *
    * If the length of `arr` is already greater than `desiredLength`, the
-   * original `arr` is returned unchanged.
+   * original `arr` is returned unmodified.
    * @template T Generic type for array values and padding value
    * @param {T[]} arr The array to pad
    * @param {number} desiredLength The length that `arr` should be after padding
