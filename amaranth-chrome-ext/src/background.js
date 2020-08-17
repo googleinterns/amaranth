@@ -1,22 +1,20 @@
-chrome.webNavigation.onHistoryStateUpdated.addListener(function({url}) {
+function injectAmaranth() {
+    chrome.tabs.executeScript(null, {
+        file: 'src/content.js',
+    });
+}
+
+chrome.webNavigation.onCompleted.addListener(injectAmaranth, {
     // Code should only be injected if on grubhub.com/restaurant/...
-    if (url.includes('restaurant')) {
-        const scriptsToInject = [
-            'lib/tf.min.js',
-            'src/CalorieLabel.js',
-            'src/AmaranthUtil.js',
-            'src/CalorieLabeller.js',
-            'src/content.js',
-        ];
+    url: [{pathPrefix: '/restaurant'}],
+});
 
-        scriptsToInject.forEach(scriptPath => {
-            chrome.tabs.executeScript(null, {
-                file: scriptPath,
-            });
-        });
-
-        chrome.tabs.insertCSS(null, {
-            file: 'src/style.css',
-        });
-    }
+chrome.webNavigation.onHistoryStateUpdated.addListener(function() {
+    // When the user navigates to a different restaurant, a new page is shown
+    // for a fraction of a second. The Chrome extension labels this intermediate
+    // page but not the real restaurant page when it loads. This timeout
+    // attempts to avoid labelling the intermediate page.
+    setTimeout(injectAmaranth, 1000);
+}, {
+    url: [{pathPrefix: '/restaurant'}],
 });
