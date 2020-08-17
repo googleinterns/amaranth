@@ -10,6 +10,8 @@ async function main() {
 
   // Attempt to load ML model
   const model = await tf.loadLayersModel(mlModelPath);
+
+  const labeller = new CalorieLabeller(tokenizer, model);
 }
 
 main();
