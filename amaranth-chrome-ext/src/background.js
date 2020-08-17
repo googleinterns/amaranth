@@ -1,5 +1,5 @@
 chrome.webNavigation.onHistoryStateUpdated.addListener(function({url}) {
-    // Code should only be injected if on a restaurant's page
+    // Code should only be injected if on grubhub.com/restaurant/...
     if (url.includes('restaurant')) {
         const scriptsToInject = [
             'lib/tf.min.js',
@@ -13,6 +13,10 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function({url}) {
             chrome.tabs.executeScript(null, {
                 file: scriptPath,
             });
+        });
+
+        chrome.tabs.insertCSS(null, {
+            file: 'src/style.css',
         });
     }
 });
