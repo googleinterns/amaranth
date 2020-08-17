@@ -47,7 +47,6 @@ class AmaranthUtil {
     while (arr.length < desiredLength) {
       arr.push(padValue);
     }
-
     return arr;
   }
 }
