@@ -1,6 +1,6 @@
 function injectAmaranth() {
     chrome.tabs.executeScript(null, {
-        file: 'src/content.js',
+        file: 'src/main.js',
     });
 }
 
