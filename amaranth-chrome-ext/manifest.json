@@ -2,6 +2,19 @@
     "name": "Amaranth",
     "version": "0.1.0",
     "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": ["*://*.grubhub.com/restaurant/*"],
+            "css": ["src/style.css"],
+            "js": [
+                "lib/tf.min.js",
+                "src/AmaranthUtil.js",
+                "src/CalorieLabel.js",
+                "src/CalorieLabeller.js",
+                "src/content.js"
+            ]
+        }
+    ],
     "web_accessible_resources": [
         "assets/*",
         "src/",
