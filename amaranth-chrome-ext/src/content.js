@@ -1,9 +1,9 @@
-const mlModelPath = chrome.runtime.getURL('assets/model/model.json');
-const tokenizerPath = chrome.runtime.getURL('assets/tokenizer.json');
-const dishNameSelector = '.menuItem-name';
-
 /** The entry point of the Chrome Extension. */
 async function main() {
+  const mlModelPath = chrome.runtime.getURL('assets/model/model.json');
+  const tokenizerPath = chrome.runtime.getURL('assets/tokenizer.json');
+  const dishNameSelector = '.menuItem-name';
+
   // Load tokenizer dictionary
   const response = await fetch(tokenizerPath);
   const tokenizerObj = await response.json();
