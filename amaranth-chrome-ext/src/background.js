@@ -1,3 +1,4 @@
+/** Executes the main.js file in the context of the user's current webpage. */
 function injectAmaranth() {
   chrome.tabs.executeScript(null, {
     file: 'src/main.js',
