@@ -32,7 +32,9 @@ class CalorieLabeller {
 
     // Ensure tokenizedDishName.length === 43 for input into ML model. This is
     // because the number 43 was the largest input in our original dataset
-    const input = AmaranthUtil.padArray(tokenizedDishName, 43, 0).slice(0, 43);
+    const inputLength = 43;
+    const input = AmaranthUtil.padArray(tokenizedDishName, inputLength, 0)
+        .slice(0, inputLength);
     const inputTensor = tf.tensor([input]);
     const calorieLabels = this.model_.predict(inputTensor);
 
