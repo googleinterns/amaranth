@@ -6,7 +6,7 @@ function injectAmaranth() {
 }
 
 chrome.webNavigation.onCompleted.addListener(injectAmaranth, {
-  // Code should only be injected if on grubhub.com/restaurant/...
+  // Dishes should only be analyzed on Grubhub's restaurant pages
   url: [{pathPrefix: '/restaurant'}],
 });
 
