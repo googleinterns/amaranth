@@ -10,6 +10,9 @@ chrome.webNavigation.onCompleted.addListener(injectAmaranth, {
   url: [{pathPrefix: '/restaurant'}],
 });
 
+// Due to Grubhub making use of HTML5's new pushState API, we can't rely on
+// the user refreshing the webpage as a reliable trigger for the extension. The
+// onHistoryStateUpdated hook listens for when a pushState call happens.
 chrome.webNavigation.onHistoryStateUpdated.addListener(function() {
   // When the user navigates to a different restaurant, a new page is shown
   // for a fraction of a second. The Chrome extension labels this intermediate
