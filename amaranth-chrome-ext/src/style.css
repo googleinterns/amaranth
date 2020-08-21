@@ -1,0 +1,26 @@
+:root {
+    --amaranth-red: #DB4437;
+    --amaranth-yellow: #F4B400;
+    --amaranth-green: #0F9D58;
+}
+
+.amaranth-low-calorie {
+    color: white;
+    background-color: var(--amaranth-green);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.amaranth-average-calorie {
+    color: white;
+    background-color: var(--amaranth-yellow);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.amaranth-high-calorie {
+    color: white;
+    background-color: var(--amaranth-red);
+    border-radius: 10px;
+    text-align: center;
+}
