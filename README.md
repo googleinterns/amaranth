@@ -8,19 +8,12 @@
 Amaranth is a nutritional data inference project to help users become more aware
 of what's in their food.
 
-An ever increasing number of people today are "selective eaters" meaning that
-they want to exclude certain foods when eating out. However, many restaurants
-don't have the resources to be able to manually label all nutritional concerns
-present in their dishes. Amaranth aims to make it easier for users to see
-potential nutritional concerns in their dishes automatically using machine
-learning.
-
 Amaranth is comprised of two sub-projects:
 
 - The Amaranth Machine Learning Model (Amaranth ML)
 - The Amaranth Chrome Extension (Amaranth CE)
 
-Amaranth ML does the predicting, for example, identifying wether or not a dish
+Amaranth ML does the predicting, for example, identifying whether or not a dish
 is high-calorie. Amaranth CE is in charge of finding dish names on webpages to
 give to Amaranth ML, and then displaying the result to the user.
 
@@ -53,18 +46,18 @@ make lint-js           # Lint Javascript source code
 
 Amaranth CE is not packaged as an official Chrome Extension, and is not released
 on the Chrome Web Store. If you'd like to install Amaranth CE on your own Chrome
-web browser, please follow the instructions below.
+web browser, please use the following steps.
 
 1. Clone this project to your local machine using `git clone ...`
 2. In your Chrome browser navigate to `chrome://extensions` in the URL bar
 3. Toggle "Developer Mode" ON.
-    - The toggle is located in the top right-hand corner of the screen for me,
-    though it may be different on your machine.
-4. Select "Load Unpacked" from the menu that appears.
-5. In the file browser that pops up, navigate to your installation of this
-project, and select the `amaranth-chrome-ext/` directory.
-6. Done! Navigate to any restaurant page on grubhub.com to ensure it's working
-correctly.
+    - The toggle is located in the top right-hand corner of the screen, but 
+    machine requirements could move the button around.
+4. Select "Load Unpacked" from the menu.
+5. In the file browser, navigate to the this project's install directory, and
+select the `amaranth-chrome-ext/` directory.
+6. Done! Navigate to any restaurant page on grubhub.com to see the model infer
+dish data.
 
 ## Project Structure
 
