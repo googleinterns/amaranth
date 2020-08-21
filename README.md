@@ -2,9 +2,6 @@
 
 **This is not an officially supported Google product.**
 
-**Please note that development on this project has ceased. See
-[Project Status](#project-status) for more information.**
-
 Amaranth is a nutritional data inference project to help users become more aware
 of what's in their food.
 
@@ -66,9 +63,3 @@ dish data.
 - `data/` - Directory to store datasets for training Amaranth ML. More info
 can be found in `data/where-is-the-data.md`
 - `docs/` Miscellaneous documentation files
-
-## Project Status
-
-This project was a part of Tom Lauerman's Google internship in the summer of
-2020. Since the conclusion of the internship, this Github repository is now
-inactive.
