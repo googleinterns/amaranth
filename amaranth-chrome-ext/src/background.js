@@ -1,3 +1,5 @@
+const historyStateUpdateDelay = 1000;
+
 /** Executes the main.js file in the context of the user's current webpage. */
 function injectAmaranth() {
   chrome.tabs.executeScript(null, {
@@ -18,7 +20,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function() {
   // for a fraction of a second. The Chrome extension labels this intermediate
   // page but not the real restaurant page when it loads. This timeout
   // attempts to avoid labelling the intermediate page.
-  setTimeout(injectAmaranth, 1000);
+  setTimeout(injectAmaranth, historyStateUpdatedDelay);
 }, {
   url: [{pathPrefix: '/restaurant'}],
 });
