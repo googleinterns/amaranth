@@ -15,10 +15,10 @@ import amaranth
 from amaranth.ml import lib
 
 # Directories to write files to
-FDC_DATA_DIR = '../../data/fdc/'  # Data set directory
-MODEL_IMG_DIR = '../../docs/img/'  # Model image directory
-RESOURCES_DIR = '../resources/'  # Project resources directory
-CHROME_EXT_DIR = 'amaranth-chrome-ext/assets'  # Chrome extension directory
+FDC_DATA_DIR = 'data/fdc/'  # Data set directory
+MODEL_IMG_DIR = 'docs/img/'  # Model image directory
+RESOURCES_DIR = 'amaranth/resources/'  # Project resources directory
+TOKENIZER_DIR = 'amaranth-chrome-ext/assets/'  # Tokenizer directory
 # Fraction of data that should be used for training, validation, and testing.
 # Should all sum to 1.0.
 TRAIN_FRAC = 0.6
@@ -33,16 +33,12 @@ DISH_NAME_FILTERS = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n'
 def main():
   print(f'Tensorflow version {tf.__version__}')
 
-  # Get data directory path
-  current_dir = os.path.dirname(__file__)
-  abs_fdc_data_dir = os.path.join(current_dir, FDC_DATA_DIR)
-
   # Read data from disk
-  food = pd.read_csv(os.path.join(abs_fdc_data_dir, 'food.csv'))
+  food = pd.read_csv(os.path.join(FDC_DATA_DIR, 'food.csv'))
   nutrient = pd.read_csv(os.path.join(
-      abs_fdc_data_dir, 'nutrient.csv')).rename(columns={'id': 'nutrient_id'})
+      FDC_DATA_DIR, 'nutrient.csv')).rename(columns={'id': 'nutrient_id'})
   food_nutrient = pd.read_csv(
-      os.path.join(abs_fdc_data_dir, 'food_nutrient.csv'))
+      os.path.join(FDC_DATA_DIR, 'food_nutrient.csv'))
   combined = lib.combine_dataframes('fdc_id', food, food_nutrient)
   combined = lib.combine_dataframes('nutrient_id', combined, nutrient)
 
@@ -101,7 +97,7 @@ def main():
 
   json.dump(
       tokenizer,
-      open(os.path.join(CHROME_EXT_DIR, 'tokenizer.json'), 'w'),
+      open(os.path.join(TOKENIZER_DIR, 'tokenizer.json'), 'w'),
       separators=(',', ':'))
 
   calorie_data['input'] = calorie_data.apply(
@@ -143,7 +139,7 @@ def main():
   ]
   keras.utils.plot_model(
       model,
-      to_file=os.path.join(current_dir, MODEL_IMG_DIR, 'model.png'),
+      to_file=os.path.join(MODEL_IMG_DIR, 'model.png'),
       show_layer_names=False,
       show_shapes=True)
 
@@ -184,7 +180,7 @@ def main():
   print(confusion)
 
   # Save model to file
-  model.save(os.path.join(current_dir, RESOURCES_DIR, 'model'))
+  model.save(os.path.join(RESOURCES_DIR, 'model'))
 
 
 if __name__ == '__main__':
