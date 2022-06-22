@@ -1,5 +1,5 @@
 tf-nightly==2.3.0-dev20200611
-numpy==1.18.5
+numpy==1.22.0
 pandas==1.0.4
 tensorflow_addons==0.10.0
 scikit_learn==0.23.1
